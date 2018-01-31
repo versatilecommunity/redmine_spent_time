@@ -2,11 +2,11 @@ require 'sptime_hook'
 
 Redmine::Plugin.register :redmine_spent_time do
   name 'Redmine Spent Time plugin'
-  author 'DSQUADTECHNOLOGIES'
+  author 'Versatile Community Inc'
   description 'This is a plugin for Redmine'
   version '0.0.1'
-  url 'http://www.redmine.org/plugins/remine-spent-time'
-  author_url 'http://example.com/about'  
+  url 'https://www.redmine.org/plugins/redmine_spent_time_versatile'
+  author_url 'http://versatilecommunity.com/about'  
 end
 
 Redmine::MenuManager.map :application_menu do |menu|

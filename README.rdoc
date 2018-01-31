@@ -1,3 +1,11 @@
 = redmine_spent_time
 
-Description goes here
+INSTALLATION:
+	bundle exec rake redmine:plugins:migrate NAME=redmine_spent_time
+	
+UNINSTALLATION:
+	bundle exec rake redmine:plugins:migrate NAME=redmine_spent_time VERSION=0
+	
+Features:
+	~ create company and branches
+	~ Save/Update Time entry in daily, weekly, monthly, quarterly and yearly manner.
