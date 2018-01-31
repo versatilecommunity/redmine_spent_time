@@ -1,0 +1,53 @@
+<h2><%= l(:label_company) %></h2>
+<%= form_tag({:controller => controller_name, :action => 'update'}, :method => :post, :id => 'query_form') do %>
+<%= hidden_field_tag 'company_id', @cpyEntries.blank? ? "" : @cpyEntries.id %>
+<%= hidden_field_tag 'address_id', @cpyEntries.blank? ? "" : @cpyEntries.address_id %>
+<div class="splitcontentleft">
+	<fieldset class="box tabular">
+	<legend><%=l(:label_company_information)%></legend>
+	<table>
+		<tr>
+			<th align="left"><%= l(:field_name) %><span style="color:red;">*</span></th>
+			<td align="left" style="padding-left:40px;"><%=h 		text_field_tag("name", @cpyEntries.blank? ? "" : @cpyEntries.name , :size => 40) %> </td>			   
+		</tr>
+		
+		<tr>
+			<th align="left"><%=  l(:label_established_year)  %></th>
+			<td align="left" style="padding-left:40px;">
+			<%=h date_field_tag('established_year', @cpyEntries.blank? ? Date.today : @cpyEntries.established_year, :size => 40, :required => true) %> <%= calendar_for('established_year') %>						   
+		</tr>
+		<tr>
+			<th align="left"><%= l(:label_service_number) %></th>
+			<td align="left" style="padding-left:40px;"><%=h text_field_tag("service_tax_number", @cpyEntries.blank? ? "" : @cpyEntries.service_tax_number, :size => 40) %> </td>			   
+		</tr>
+		<tr>
+			<th align="left"><%= l(:label_pan_number) %></th>
+			<td align="left" style="padding-left:40px;"><%=h text_field_tag("pan_number", @cpyEntries.blank? ? "" : @cpyEntries.pan_number, :size => 40) %> </td>			   
+		</tr>
+		<tr>
+			<th align="left"><%= l(:label_tin_number) %></th>
+			<td align="left" style="padding-left:40px;"><%=h text_field_tag("tin_cin_number", @cpyEntries.blank? ? "" : @cpyEntries.tin_cin_number, :size => 40) %> </td>
+		</tr> 
+		<tr>
+			 <th align="left"><%= l(:label_tax_number) %></th>
+			 <td align="left" style="padding-left:40px;"><%=h text_field_tag("tax_number",@cpyEntries.blank? ? "" : @cpyEntries.tax_number,:size =>40) %> </td>
+		</tr>
+		<tr>
+			<th align="left"><%= l(:label_website) %></th>
+			<td align="left" style="padding-left:40px;"><%=h text_field_tag("website", @cpyEntries.blank? ? "" : @cpyEntries.website, :size => 40) %> </td>
+		</tr> 
+	</table>
+</fieldset>
+</div>
+<div class="splitcontentright">
+	<%= render partial: "spcompany/address_info", locals: { address: @addressObj }%>
+</div>
+<div style="clear:both;"></div>
+<%= submit_tag l(:button_save) ,:id => 'company_save'%>
+<% end %>
+<br/>
+<% unless @cpyEntries.blank? %>
+	<h2><%= l(:label_branches) %></h2>
+	<br/>
+	<%= render partial: "spcompany/branches" %>
+<% end %>

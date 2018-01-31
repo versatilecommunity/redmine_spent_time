@@ -1,0 +1,132 @@
+<script type="text/javascript"> 
+	projectUrl="<%= "#{url_for(:controller => "sptime", :action => 'ProjectProperties')}" %>";
+</script>
+<%  
+	companyId =session[controller_name][:company_id]
+	branchId =session[controller_name][:branch_id]
+	projectId =session[controller_name][:project_id]
+	projectArr = projectsArray(branchId, companyId, false) #User.current.projects.pluck(:name, :id) 
+	issueArr = Array.new
+	memberArr = Array.new
+	activityArr = Array.new
+	unless projectArr.blank? #projectArr[0][1].blank? 
+		project = Project.find(projectArr[0][1])
+		issueArr = project.issues.pluck(:subject, :id)
+		memberArr = project.users.pluck(:firstname, :id)
+		activityArr = project.activities.pluck(:name, :id)
+	end
+	
+%>
+<div class="wk-contextual">
+	<h2 style="float:left;"><%= "Time Entries" %></h2>
+	<%= link_to l(:label_add_row), "#", { :onclick => "javascript:AddRow('timeEntryTable', 'totalrow');",  :class => 'icon icon-time-add' }%>
+</div>
+<div style="clear:both"></div>
+<%= form_tag({:controller => "sptime", :action => 'update'}, :method => :post, :id => 'time_entry_form') do %>
+<% row_index = 1 %>	
+<%= hidden_field_tag('frequency', session[controller_name][:frequency]) %>
+<table id="timeEntryTable" class="list time-entries">
+<thead>
+	<tr>
+		<th class="lbl-txt-align" >#</th>
+		<th class="lbl-txt-align"><%= l(:field_project) %></th>
+		<th class="lbl-txt-align"><%= l(:field_issue) %></th>
+		<th class="lbl-txt-align"><%= l(:label_member) %></th>
+		<th class="lbl-txt-align"><%= l(:field_spent_on) %></th>
+		<th class="lbl-txt-align"><%= l(:field_activity) %></th>
+		<th class="lbl-txt-align"><%= l(:field_comments) %></th>
+		<th class="lbl-txt-align"><%= l(:field_hours) %></th>
+		<th></th>
+	</tr>
+</thead>
+<tbody>
+	<% unless @timeEntries.blank? %>
+		<% @timeEntries.each do | entry | %>
+		<tr onclick="  row_id  = this.rowIndex ">
+		<td class="lbl-txt-align" headers="time_entry_id">
+			<%=h hidden_field_tag("time_entry_id#{row_index}",   entry.id )  %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="project_id">
+			<%=h select_tag("project_id#{row_index}", options_for_select(projectArr, :selected => entry.project_id), :onchange => "projectIssueOrMemberChanged(this.id, 'issue_id#{row_index}', true, 'Issue');projectIssueOrMemberChanged(this.id, 'member_id#{row_index}', true, 'Member');projectIssueOrMemberChanged(this.id, 'activity_id#{row_index}', true, 'Activity');") %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="issue_id">
+			<%=h select_tag("issue_id#{row_index}", options_for_select(issueArr, :selected=> entry.issue_id)) %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="member_id">
+			<%=h select_tag("member_id#{row_index}", options_for_select(memberArr, :selected => entry.user_id)) %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="spent_on">
+			<%= text_field_tag "spent_on#{row_index}",  entry.entry_date  , :required => false, :class => "date",  :style => "width:150px;" %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="activity_id">
+			<%=h select_tag("activity_id#{row_index}", options_for_select(activityArr, :selected => entry.activity_id)) %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="comment" >
+			<%= text_field_tag "comment#{row_index}",  entry.comments , :required => false,  :style => "width:350px;" %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="hours" >
+			<%= text_field_tag "hours#{row_index}",  entry.hours , :required => false,  :style => "width:120px;" %>
+		</td>
+		
+		<td>
+			<%= link_to image_tag('delete.png'), "javascript:deleteRow('timeEntryTable', 'totalrow');", :id => row_index,
+					:data => {:confirm => l(:text_are_you_sure)},
+					:title => l(:button_delete) %>
+		</td>	
+		</tr>
+		<% row_index = row_index + 1 %>
+		<% end %>
+	<% else %>
+		<tr onclick="  row_id  = this.rowIndex ">
+		<td class="lbl-txt-align" headers="time_entry_id">
+			<%=h hidden_field_tag("time_entry_id#{row_index}",   "" )  %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="project_id">
+			<%=h select_tag("project_id#{row_index}", options_for_select(projectArr), :onchange => "projectIssueOrMemberChanged(this.id, 'issue_id#{row_index}', true, 'Issue');projectIssueOrMemberChanged(this.id, 'member_id#{row_index}', true, 'Member');projectIssueOrMemberChanged(this.id, 'activity_id#{row_index}', true, 'Activity');") %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="issue_id">
+			<%=h select_tag("issue_id#{row_index}", options_for_select(issueArr)) %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="member_id">
+			<%=h select_tag("member_id#{row_index}", options_for_select(memberArr)) %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="spent_on">
+			<%= text_field_tag "spent_on#{row_index}",  ""  , :required => false, :class => "date",  :style => "width:150px;" %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="activity_id">
+			<%=h select_tag("activity_id#{row_index}", options_for_select(activityArr)) %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="comment" >
+			<%= text_field_tag "comment#{row_index}",  "" , :required => false,  :style => "width:350px;" %>
+		</td>
+		
+		<td class="lbl-txt-align" headers="hours" >
+			<%= text_field_tag "hours#{row_index}",  "" , :required => false,  :style => "width:120px;" %>
+		</td>
+		
+		<td>
+			<%= link_to image_tag('delete.png'), "javascript:deleteRow('timeEntryTable', 'totalrow');", :id => row_index,
+					:data => {:confirm => l(:text_are_you_sure)},
+					:title => l(:button_delete) %>
+		</td>	
+		</tr>
+		<% row_index = row_index + 1 %>
+	<% end %>	
+</tbody>
+</table>
+<%=h hidden_field_tag("totalrow",  row_index-1 )  %>
+<p><%= submit_tag l(:button_save) %></p>
+<% end %>

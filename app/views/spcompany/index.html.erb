@@ -1,0 +1,40 @@
+<h2><%= l(:label_company) %></h2>
+<%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
+<%= form_tag({:controller => controller_name, :action => 'index'}, :method => :post, :id => 'query_form') do %>
+		<fieldset class="box tabular">
+			<%= l(:field_name) %>:
+			<%= text_field_tag 'name', params[:name], :size => 30 %>
+			<%= submit_tag l(:button_apply), :class => "small", :name => nil %>
+			<%= link_to l(:button_clear), {:controller => controller_name, :action => 'index', :tab => controller_name}, :class => 'icon icon-reload' %>
+			<%= link_to l(:label_new_cpy), url_for(:controller => controller_name, :action => 'edit'), :class => 'icon icon-add', :style=> "float:right" %>
+		</fieldset>
+<% end %>
+<br/>
+<table class="list time-entries">
+	<tr>
+		<th class="lbl-txt-align"><%= l(:field_name) %></th>
+		<th class="lbl-txt-align"><%= l(:label_established_year) %></th>
+		<th class="lbl-txt-align"><%= l(:label_service_number) %></th>
+		<th class="lbl-txt-align"><%= l(:label_pan_number) %></th>
+		<th class="lbl-txt-align"><%= l(:label_tin_number) %></th>
+		<th class="lbl-txt-align"><%= l(:label_tax_number) %></th>		
+		<th class="lbl-txt-align"></th>
+	<tr>
+<tbody>
+	<% @cpyEntries.each do | entry | %>
+		<tr>
+		<td class="lbl-txt-align"><%= entry.name %></td>
+		<td class="lbl-txt-align"><%= entry.established_year.strftime('%F') unless  entry.established_year.blank? %></td>
+		<td class="lbl-txt-align"><%= entry.service_tax_number %></td>
+		<td class="lbl-txt-align"><%= entry.pan_number %></td>
+		<td class="lbl-txt-align"><%= entry.tin_cin_number %></td>
+		<td class="lbl-txt-align"><%= entry.tax_number %></td>		
+		<td class="lbl-txt-align">
+			<%= link_to image_tag('edit.png'), {:controller => controller_name, :action => 'edit', :company_id => entry.id}, :title => l(:button_edit) %>
+				<%= link_to image_tag('delete.png'), {:controller => controller_name, :action => 'destroy', :company_id => entry.id},  :data => {:confirm => l(:text_are_you_sure)}, :method => :delete, :title => l(:button_delete) %></td>
+		</td>	
+		</tr>
+	<% end %>
+</tbody>
+</table>
+<span class="pagination"><%= pagination_links_full @entry_pages, @entry_count %></span>

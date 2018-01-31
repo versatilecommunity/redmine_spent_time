@@ -1,0 +1,2 @@
+module SpcompanyHelper
+end

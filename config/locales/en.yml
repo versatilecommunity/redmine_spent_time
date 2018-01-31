@@ -1,0 +1,35 @@
+# English strings go here for Rails i18n
+en:
+  # my_label: "My label"
+  label_time_sheet: "Time Sheet"
+  label_time: "Time"
+  label_branches: Branches
+  label_company: Company
+  label_new: New
+  button_continue: Continue
+  label_wk_no_user_current_project: no users in selected project
+  label_add_row: Add Row
+  label_monthly: Monthly
+  label_quarterly: Quarterly
+  label_annually: Annually
+  label_weekly: Weekly
+  label_approve_frequency: Aggregate Frequency
+  label_service_number: Service Tax Number
+  label_pan_number: Pan Number
+  label_tin_number: Tin\Cin Number
+  label_tax_number: Tax Number
+  label_established_year: Established Year
+  label_address_information: Address Information
+  label_company_information: Company Information
+  label_work_phone: Work Phone
+  label_mobile: Mobile
+  label_email: E-Mail
+  label_fax: Fax
+  label_website: Website
+  label_address1: Address1
+  label_address2: Address2
+  label_city: City
+  label_state: State
+  label_country: Country
+  label_pin: Pin
+  label_new_cpy: New Company

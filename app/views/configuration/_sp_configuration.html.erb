@@ -1,0 +1,10 @@
+<% sp_helper = Object.new.extend(SptimeHelper) 
+	aggergateHash = sp_helper.aggergateHash
+%>
+<fieldset>
+
+<p style="margin-left: -110px;"><label><%= l(:label_approve_frequency) %></label>
+	<%= select_tag 'settings[approve_frequency]', options_for_select(aggergateHash.invert, :selected => @settings['approve_frequency']) %>
+</p>
+
+</fieldset>
