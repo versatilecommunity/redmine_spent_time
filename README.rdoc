@@ -1,5 +1,7 @@
 = redmine_spent_time
 
+Along with the previous properties of Redmine, Our Plugin introduces the phenomenal features of Time Tracking and the updation of data(For both Parent company and its branches).It can be daily, weekly, monthly, yearly and of course 24/7.Extending the ease of Tracking enables the quality of product.
+
 INSTALLATION:
 	bundle exec rake redmine:plugins:migrate NAME=redmine_spent_time
 	
@@ -9,3 +11,16 @@ UNINSTALLATION:
 Features:
 	~ create company and branches
 	~ Save/Update Time entry in daily, weekly, monthly, quarterly and yearly manner.
+	
+
+Customization:
+	For any Customization/Support, please contact us, our consulting team will be happy to help you
+	
+	Versatile Community Inc
+	http://versatilecommunity.co.in/
+	info@versatilecommunity.co.in
+	
+Please provide your rating at http://www.redmine.org/plugins/redmine_spent_time_versatile
+	
+Resources:
+	User Guide : http://versatilecommunity.co.in/doc/spent_time_user_guide_v0.1.pdf
