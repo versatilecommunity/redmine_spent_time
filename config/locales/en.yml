@@ -1,7 +1,7 @@
 # English strings go here for Rails i18n
 en:
   # my_label: "My label"
-  label_time_sheet: "Time Sheet"
+  label_time_sheet: "Bulk Time Entries"
   label_time: "Time"
   label_branches: Branches
   label_company: Company
