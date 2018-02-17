@@ -19,5 +19,6 @@ class SpCompany < ActiveRecord::Base
   unloadable
   belongs_to :address, :class_name => 'SpAddress', :dependent => :destroy
   has_many :branches, :class_name => 'SpBranch', :foreign_key => 'company_id', :dependent => :destroy
+  has_many :users, through: :branches
   validates_presence_of :name 
 end
