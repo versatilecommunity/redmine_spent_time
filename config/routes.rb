@@ -28,3 +28,15 @@
 	delete 'spcompany/destroy', :to => 'spcompany#destroy'
 	
 	post 'spcompany/branchUpdate', :to => 'spcompany#branchUpdate'
+	
+	get 'spprojectplan/index', :to => 'spprojectplan#index'
+	
+	get 'spprojectplan/edit', :to => 'spprojectplan#edit'
+	
+	delete 'spprojectplan/destroy', :to => 'spprojectplan#destroy'
+	
+	post 'spprojectplan/update', :to => 'spprojectplan#update'
+	
+	get 'spprojectplan/getProjectVersion', :to => 'spprojectplan#getProjectVersion'
+	
+	get 'spprojectplan/new', :to => 'spprojectplan#new'

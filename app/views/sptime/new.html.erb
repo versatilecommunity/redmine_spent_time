@@ -1,5 +1,9 @@
-<%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
 <%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
+<%= stylesheet_link_tag 'jquery_ui', :plugin => "redmine_spent_time" %>
+<%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
+<%= javascript_include_tag 'jquery_1_12_4', :plugin => "redmine_spent_time" %>
+<%= javascript_include_tag 'jquery_ui', :plugin => "redmine_spent_time" %>
+
 <script type="text/javascript"> 
 	$(document).ready(function()
 	{
@@ -9,6 +13,25 @@
 	});
   
 </script>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  
+  <style>
+  .custom-combobox {
+    position: relative;
+  }
+  .custom-combobox-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+  }
+  .custom-combobox-input {
+    margin: 0;
+    padding: 5px 10px;
+  }
+  </style>
 
 <%= render :partial => 'edit_time_entry' %>
 

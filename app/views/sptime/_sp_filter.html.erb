@@ -2,8 +2,9 @@
 <%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
 <script type="text/javascript"> 
 	cpybranchUrl="<%= "#{url_for(:controller => "sptime", :action => 'getCpyBranches')}" %>";
+	versionUrl="<%= "#{url_for(:controller => "spprojectplan", :action => 'getProjectVersion')}" %>";
 </script>
-<%= form_tag({:controller => 'sptime', :action => 'index'}, :method => :get, :id => 'query_form') do %>
+<%= form_tag({:controller => controller_name, :action => action}, :method => :get, :id => 'query_form') do %>
 <%  branchArr = Array.new
 	projectArr = Array.new
 	memberArr = Array.new	
@@ -36,7 +37,7 @@
 		bId = branchId
 	end
 	
-	projectArr = projectsArray(bId, (cId),  true) 
+	projectArr = projectsArray(bId, (cId),  projectBlank) 
 	memberArr = memberArray((projectId.blank? ? projectArr[0][1] : projectId), bId, (cId), true) #unless branchArr.blank?
 	
 	frequencyHash = aggergateHash
@@ -54,43 +55,65 @@
 </script>
 <%= hidden_field_tag "searchlist", controller_name %>
 <fieldset class="box tabular">
-<table style="width:100%;">
+<table >
 <tr>
 <% unless User.current.userPermission.blank?  %>
 	<% if User.current.admin  %>
 		<th><%= l(:label_company) %></th>
 		<td>	
-			<%=h select_tag('company_id', options_for_select(companyArr, :selected=> companyId.blank? ? companyArr : companyId), :onchange => "cpyBranchChanged(this.id, 'branch_id',  true, 'branch'); ") %>
+			<%=h select_tag('company_id', options_for_select(companyArr, :selected=> companyId.blank? ? companyArr : companyId), :onchange => "cpyBranchChanged(this.id, 'branch_id',  true, 'branch', #{projectBlank}, #{projectBlank}); ") %>
 		</td>
 	<% end %>
 	<% if User.current.admin || User.current.userPermission.short_name == 'M'  %>
 		<th><%= l(:label_branches) %></th>
 		<td>
-			<%=h select_tag('branch_id', options_for_select(branchArr, :selected=> bId), :onchange => "branchProjectChanged(this.id, 'project_id', true, 'project'); ") %>
+			<%=h select_tag('branch_id', options_for_select(branchArr, :selected=> bId), :onchange => "branchProjectChanged(this.id, 'project_id', #{projectBlank}, 'project', #{projectBlank}); ") %>
 		</td>
 	<% end %>
 <% end %>
-<th><%= l(:label_project) %></th>
-<td><%=h select_tag('project_id', options_for_select(projectArr, :selected=> projectId.blank? ? projectArr : projectId), :onchange => "changedMembers(); ") %></td>
-<th><%= l(:label_member_plural) %></th>
-<td><%=h select_tag('user_id', options_for_select(memberArr, :selected=> userId.blank? ? memberArr : userId)) %></td>
-<th><%= l(:label_approve_frequency) %></th>
-<td><%=h select_tag('frequency', options_for_select(frequencyHash.invert, :selected=> frequency.blank? ? frequencyHash.invert : frequency)) %></td>
-
+	<th><%= l(:label_project) %></th>
+	<td>
+		<%=h select_tag('project_id', options_for_select(projectArr, :selected=> projectId.blank? ? projectArr : projectId), :onchange => "#{controller.projectOnChangeMethod}") %>
+	</td>
+	<% if memberDD %>
+	<th><%= l(:label_member_plural) %></th>
+	<td>
+		<%=h select_tag('user_id', options_for_select(memberArr, :selected=> userId.blank? ? memberArr : userId)) %>
+	</td>
+	<% end %>
+	<% if frequencyDD %>
+	<th><%= l(:label_approve_frequency) %></th>
+	<td>
+		<%=h select_tag('frequency', options_for_select(frequencyHash.invert, :selected=> frequency.blank? ? frequencyHash.invert : frequency)) %>
+	</td>
+	<% end %>
+	<% unless controller.getAdditionalDropdown.blank? %>
+		<%= render :partial => controller.getAdditionalDropdown, locals: { projectId: projectArr[0][1] } %>
+	<% end %>
+	<td style="float:left; !important">
+		<%= l(:label_date_from_to, :start => ( date_field_tag('from', from.blank? ? Date.today : from, {:id => 'from', :size => 10}) +
+		  calendar_for('from')), :end => ( date_field_tag('to', to.blank? ? Date.today+30 : to, {:id => 'to', :size => 10}) +
+		  calendar_for('to'))).html_safe %>
+	<td>
 </tr>
 </table >
-
+<!--
 <table style="width:100%; padding-left:10px;">
 <tr>
 <td style="float:left; !important">
-<%= l(:label_date_from_to, :start => ( date_field_tag('from', from.blank? ? Date.today : from, {:id => 'from', :size => 10}) +
+<%#= l(:label_date_from_to, :start => ( date_field_tag('from', from.blank? ? Date.today : from, {:id => 'from', :size => 10}) +
   calendar_for('from')), :end => ( date_field_tag('to', to.blank? ? Date.today+30 : to, {:id => 'to', :size => 10}) +
   calendar_for('to'))).html_safe %>
 <td>
 
-<td style= 	"float:right;" ><%= submit_tag l(:button_apply), :class => "small", :name => nil%>
- <%= link_to l(:button_clear), {:controller => controller_name, :action => 'index', :tab => controller_name}, :class => 'icon icon-reload' %></td>
+<td style= 	"float:right;" ><%#= submit_tag l(:button_apply), :class => "small", :name => nil%>
+ <%#= link_to l(:button_clear), {:controller => controller_name, :action => 'index', :tab => controller_name}, :class => 'icon icon-reload' %></td>
 </tr>
 </table>
+-->
+<div style="float:right;">
+<%= submit_tag l(:button_apply), :class => "small", :name => nil%>
+ <%= link_to l(:button_clear), {:controller => controller_name, :action => 'index', :tab => controller_name}, :class => 'icon icon-reload' %>
+</div>
 </fieldset>
 <% end %>

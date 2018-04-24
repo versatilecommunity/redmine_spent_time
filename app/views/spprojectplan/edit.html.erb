@@ -1,0 +1,50 @@
+<h2><%= l(:label_proj_plan) %></h2>
+<%= stylesheet_link_tag 'jquery_datetimepicker', :plugin => "redmine_spent_time" %>
+<%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
+<%= javascript_include_tag 'jquery_min', :plugin => "redmine_spent_time" %>
+<%= javascript_include_tag 'jquery_datetimepicker_full', :plugin => "redmine_spent_time" %>
+
+<%#= javascript_include_tag 'tableindent', :plugin => "redmine_spent_time" %>
+<%#= stylesheet_link_tag 'tableindent', :plugin => "redmine_spent_time" %>
+
+
+<%# content_for :sidebar do %>
+    <%#= render :partial => 'sidebar/st_sidebar' %>
+<%# end %>
+	
+<%= form_tag({:controller => "spprojectplan", :action => 'update'}, :method => :post, :id => 'query_form') do %>
+<fieldset class="box tabular">
+	<table style="padding-left:80px;">
+	<tr>
+		<td>
+			<label style="padding-left:40px;" id="projectDD"><%= l(:label_project) + " " + l(:field_name) + " :" %></label>
+		</td>
+		<td style="padding-left: 40px;">
+			<%= @projObj[0].name %>
+			<%=h hidden_field_tag("project_id",   @projObj[0].id )  %>
+		</td>		
+		<td style="padding-left:120px;">
+			<label><%= l(:field_version) + " " + l(:field_name) + " :" %></label>
+		</td>
+		<td>
+			<%= @versionObj.name unless @versionObj.blank? %>
+			<%=h hidden_field_tag("version_id",   @versionObj.blank? ? nil : @versionObj.id )  %>
+		</td>	
+	</tr>
+	</table>
+</fieldset>
+
+
+ <%= render :partial => 'spprojectplan/edit_project_plan_issues.html' %>
+ 
+<% end %>
+<script type="text/javascript"> 
+	$(document).ready(function()
+	{
+		$('.datetimepicker').datetimepicker({
+			dateFormat : 'DD/MM/YYYY',
+			timeFormat:  "hh:mm:ss"
+		});
+	});
+  
+</script>

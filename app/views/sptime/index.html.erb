@@ -1,11 +1,11 @@
 <h2><%= l(:label_time_sheet) %></h2>
 <%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
-<%= render :partial => 'sp_filter' %>
+<%= render :partial => 'sp_filter', locals: { memberDD: true, frequencyDD: true, projectBlank: true, memberload: true, action: 'index' } %>
 <%= link_to l(:label_new) + " " + l(:label_time_sheet), url_for(:controller => controller_name, :action => 'new'), :class => 'icon icon-time-add', :style=> "float:right" %>
 
 <br/>
 <%= render :partial => 'time_entry_list' %>
 <br/>
-<% content_for :sidebar do %>
-    <%= render :partial => 'sidebar/st_sidebar' %>
-<% end %>
+<%# content_for :sidebar do %>
+    <%#= render :partial => 'sidebar/st_sidebar' %>
+<%# end %>

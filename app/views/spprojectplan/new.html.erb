@@ -1,0 +1,15 @@
+<h2><%= l(:label_new) + " " + l(:label_proj_plan) %></h2>
+<%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
+<script type="text/javascript"> 
+	versionUrl="<%= "#{url_for(:controller => "spprojectplan", :action => 'getProjectVersion')}" %>";
+</script>
+<%	projects = Project.where("#{Project.table_name}.status not in(#{Project::STATUS_CLOSED},#{Project::STATUS_ARCHIVED})").order('name') 
+	projArr = options_for_project(projects,false) 
+	versionArr = Version.where(:project_id => projArr[1]).order(:name).pluck(:name, :id)
+%>
+
+<%#= form_tag({:controller => "spprojectplan", :action => 'edit'}, :method => :get, :id => 'query_form') do %>
+<%= render :partial => 'sptime/sp_filter', locals: { memberDD: false, frequencyDD: false, projectBlank: false, memberload: false, action: 'edit' } %>
+
+<p><%#= submit_tag l(:label_continue), :class => "small", :name => nil %></p>
+<%# end %>

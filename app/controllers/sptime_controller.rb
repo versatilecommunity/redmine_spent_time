@@ -2,6 +2,7 @@ class SptimeController < ApplicationController
 	unloadable
 	include SptimeHelper
 	before_filter :require_login
+	menu_item :sptime
 
 
 	def index	
@@ -291,6 +292,13 @@ class SptimeController < ApplicationController
 	end
 
 	def destroy
+	end
+	
+	def getAdditionalDropdown		
+	end
+	
+	def projectOnChangeMethod
+		"changedMembers();"
 	end
 
 end

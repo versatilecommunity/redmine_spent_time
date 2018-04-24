@@ -60,7 +60,7 @@
 		</td>
 		
 		<td class="lbl-txt-align" headers="spent_on">
-			<%= text_field_tag "spent_on#{row_index}",  entry.entry_date  , :required => false, :class => "date",  :style => "width:150px;" %>
+			<%= text_field_tag "spent_on#{row_index}",  entry.entry_date  , :required => false, :class => "date" %>
 		</td>
 		
 		<td class="lbl-txt-align" headers="activity_id">
@@ -68,7 +68,7 @@
 		</td>
 		
 		<td class="lbl-txt-align" headers="comment" >
-			<%= text_field_tag "comment#{row_index}",  entry.comments , :required => false,  :style => "width:350px;" %>
+			<%= text_field_tag "comment#{row_index}",  entry.comments , :required => false,  :style => "width:280px;" %>
 		</td>
 		
 		<td class="lbl-txt-align" headers="hours" >
@@ -110,7 +110,7 @@
 		</td>
 		
 		<td class="lbl-txt-align" headers="comment" >
-			<%= text_field_tag "comment#{row_index}",  "" , :required => false,  :style => "width:350px;" %>
+			<%= text_field_tag "comment#{row_index}",  "" , :required => false,  :style => "width:280px;" %>
 		</td>
 		
 		<td class="lbl-txt-align" headers="hours" >

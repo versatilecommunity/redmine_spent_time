@@ -33,3 +33,6 @@ en:
   label_country: Country
   label_pin: Pin
   label_new_cpy: New Company
+  label_proj_plan: Project Plan
+  label_end_date: End Date
+  label_continue: Continue

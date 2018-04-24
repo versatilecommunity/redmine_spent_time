@@ -1,0 +1,30 @@
+<div class="autoscroll">
+	<table class="list time-entries">
+		<thead>
+			<tr>
+				<th class="lbl-txt-align"><%= l(:label_project) %></th>
+				<th class="lbl-txt-align"><%= l(:label_version)  %></th>
+				<th class="lbl-txt-align"><%= l(:field_estimated_hours) %></th>
+				<th class="lbl-txt-align"><%= l(:field_start_date) %></th>			
+				<th class="lbl-txt-align"><%= l(:field_due_date) %></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @projectPlan.each do |entry| %>
+				<tr>
+					  <td class="lbl-txt-align"><%=h entry.project_name %></td>
+					  <td class="lbl-txt-align"><%=h entry.version_name %></td>
+					  <td class="lbl-txt-align"><%=h entry.hours %></td>
+					  <td class="lbl-txt-align"><%=h entry.start_date %></td>
+					  <td class="lbl-txt-align"><%=h entry.due_date %></td>
+					
+					  <td align="center">
+						  <%= link_to image_tag('edit.png'), {:controller => controller.controller_name, :action => 'edit', :project_id => entry.project_id,:version_id => entry.fixed_version_id}, :title => l(:button_edit) %> 						  
+					  </td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>
+<span class="pagination"><%= pagination_links_full @entry_pages, @entry_count %></span>
