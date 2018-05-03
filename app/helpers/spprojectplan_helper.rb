@@ -18,4 +18,8 @@ include SptimeHelper
 		end
 		projArr
 	end
+	
+	def assigneeUsers
+		@projObj.map(&:assignable_users).reduce(:&)		
+	end
 end

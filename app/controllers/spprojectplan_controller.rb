@@ -28,12 +28,17 @@ class SpprojectplanController < ApplicationController
 	def edit
 		@projObj = nil
 		@versionObj = nil
+		@trackers =  Tracker.order(:name)
 		if !params[:project_id].blank?
 			@projObj = Project.where(:id => params[:project_id].to_i)
 		end
 		
 		if !params[:version_id].blank?
 			@versionObj = Version.find(params[:version_id].to_i)
+		end
+		
+		if !params[:project_id].blank? && !params[:version_id].blank?
+			@projPlan = Issue.where(:fixed_version_id => params[:version_id].to_i, :project_id =>  params[:project_id].to_i)
 		end
 	end
 	

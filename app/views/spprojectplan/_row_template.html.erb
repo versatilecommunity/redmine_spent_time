@@ -1,0 +1,59 @@
+<tr id="issuerow" onclick="  row_id  = this.rowIndex " class="parent">
+	<td class="lbl-txt-align" id = "addChild_id#{row_index}" headers="addChild_id">
+		<%= link_to "", "#", { :onclick => "javascript:addParentChildRow('projPlanTable', this);", :id => "addChild_id#{row_index}", :class => 'icon icon-add' }%>
+	</td>
+	<td class="lbl-txt-align" id = "issue_id#{row_index}" headers="issue_id">
+		<%=h hidden_field_tag("issue_id#{row_index}",  obj.blank? ? "" : obj.id  )  %>
+		
+	</td>
+	
+	<td class="lbl-txt-align" headers="item_index">
+		<label id="item_index<%= row_index.to_s %>"><%= row_index  %></label>
+	</td>
+	
+	<td class="lbl-txt-align" headers="issue_root">
+		<%=h hidden_field_tag("issue_root#{row_index}",   row_index )  %>
+	</td>
+	
+	<td class="lbl-txt-align" headers="issue_trackers">
+		<%=h select_tag("issue_trackers#{row_index}", options_from_collection_for_select(@trackers, :id, :name, obj.blank? ? nil : obj.tracker_id)) %>
+	</td>
+	
+	<td class="lbl-txt-align" headers="issue_subject">
+		<%= text_field_tag "issue_subject#{row_index}",  obj.blank? ? "" : obj.subject  , :required => false, :style => "width:250px;" %>
+	</td>
+	
+	<td class="lbl-txt-align" headers="issue_hours">
+		<%= text_field_tag "issue_hours#{row_index}",  obj.blank? ? "" : obj.estimated_hours  , :required => false,  :style => "width:50px;" %>
+	</td>
+	
+	<td class="lbl-txt-align" headers="issue_start_date">
+		<%= text_field_tag "issue_start_date#{row_index}",  obj.blank? ? Date.today : obj.start_date , :class => "datetimepicker",  :required => false, :style=> "float: left;" %>
+		<%#=time_select("issue_start_time#{row_index}", "start_time", :style=>"float:right;") %>
+	</td>
+	
+	<td class="lbl-txt-align" headers="issue_end_date">
+		<%= text_field_tag "issue_end_date#{row_index}",  obj.blank? ? Date.today : obj.due_date, :class => "datetimepicker", :required => false %>
+		<%#=time_select("issue_end_time#{row_index}", "start_time") %>
+	</td>
+	
+	
+	<td class="lbl-txt-align" headers="issue_assignee" >
+		<%=h select_tag("issue_assignee#{row_index}", 						principals_options_for_select(assigneeUsers, obj.blank? ? nil : obj.assigned_to_id)) %>
+	</td>		
+	
+	<td class="lbl-txt-align" headers="lbl_issue_parent" >
+		<label id="lbl_issue_parent<%= row_index %>"><%= obj.blank? ? nil : @rootHash[obj.parent_id] %> </label>			
+		<%#= text_field_tag "issue_parent#{row_index}", obj.blank? ? nil : @rootHash[obj.id] %>
+	</td>
+	
+	<td class="lbl-txt-align" headers="issue_parent" >			
+		<%=h hidden_field_tag("issue_parent#{row_index}",   obj.blank? ? nil : @rootHash[obj.parent_id] )  %>			
+	</td>
+	
+	<td>
+		<%= link_to image_tag('delete.png'), "javascript:deleteRow('projPlanTable', 'totalrow');", :id => row_index,
+				:data => {:confirm => l(:text_are_you_sure)},
+				:title => l(:button_delete) %>
+	</td>	
+</tr>
