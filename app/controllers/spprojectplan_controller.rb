@@ -31,6 +31,7 @@ class SpprojectplanController < ApplicationController
 		@trackers =  Tracker.order(:name)
 		if !params[:project_id].blank?
 			@projObj = Project.where(:id => params[:project_id].to_i)
+			@projPlan = Issue.where(:project_id =>  params[:project_id].to_i)
 		end
 		
 		if !params[:version_id].blank?
@@ -91,7 +92,7 @@ class SpprojectplanController < ApplicationController
 			issueObj.lock_version =  0
 			issueObj.done_ratio = 0
 			issueObj.is_private = 0
-			issueObj.fixed_version_id = versionId.to_i
+			issueObj.fixed_version_id = versionId.to_i unless versionId.blank?
 			if issueObj.valid?
 				issueObj.save
 			else
