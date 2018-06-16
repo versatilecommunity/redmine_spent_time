@@ -38,7 +38,7 @@
 	end
 	
 	projectArr = projectsArray(bId, (cId),  projectBlank) 
-	memberArr = memberArray((projectId.blank? ? projectArr[0][1] : projectId), bId, (cId), true) #unless branchArr.blank?
+	memberArr = memberArray((projectId.blank? ? projectArr[0][1] : projectId), bId, (cId), true) unless projectArr.blank?
 	
 	frequencyHash = aggergateHash
 %>
@@ -88,7 +88,8 @@
 	</td>
 	<% end %>
 	<% unless controller.getAdditionalDropdown.blank? %>
-		<%= render :partial => controller.getAdditionalDropdown, locals: { projectId: projectArr[0][1] } %>
+		<% projectID = projectArr.blank? ? nil : projectArr[0][1] %>
+		<%= render :partial => controller.getAdditionalDropdown, locals: { projectId: projectID } %>
 	<% end %>
 	<td style="float:left; !important">
 		<%= l(:label_date_from_to, :start => ( date_field_tag('from', from.blank? ? Date.today : from, {:id => 'from', :size => 10}) +

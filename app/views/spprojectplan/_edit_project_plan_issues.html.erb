@@ -1,5 +1,6 @@
 
-<div class="wk-contextual">
+<div class="sp-contextual">
+	<b><label id="lbltotal" style="float:left"><%= l(:label_total) + " " +  l(:field_hours) + " : " %><%= @totalHours.blank? ? "0" : @totalHours %></b></label>
 	<%= link_to l(:label_add_row), "#", { :onclick => "javascript:AddRow('projPlanTable', 'totalrow');",  :class => 'icon icon-add', :style=> "float:right;" }%>
 </div>
 <% row_index = 1
@@ -22,6 +23,7 @@
 		<th class="lbl-txt-align"><%= l(:label_parent_revision) + " / " + l(:label_child_revision) %></th>
 		<th></th>
 		<th></th>
+		<th></th>
 	</tr>
 </thead>
 <tbody>
@@ -39,5 +41,6 @@
 </tbody>
 </table>
 <%=h hidden_field_tag("totalrow",  row_index-1 )  %>
+<p><%= "*" + l(:label_delete_msg) %></p>
 <p><%= submit_tag l(:button_save) %></p>
 

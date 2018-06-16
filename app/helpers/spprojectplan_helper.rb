@@ -20,6 +20,8 @@ include SptimeHelper
 	end
 	
 	def assigneeUsers
-		@projObj.map(&:assignable_users).reduce(:&)		
+		assignUser = nil
+		assignUser = @projObj.map(&:assignable_users).reduce(:&)	 unless @projObj.blank?
+		assignUser
 	end
 end

@@ -24,7 +24,7 @@
 	</td>
 	
 	<td class="lbl-txt-align" headers="issue_hours">
-		<%= text_field_tag "issue_hours#{row_index}",  obj.blank? ? "" : obj.estimated_hours  , :required => false,  :style => "width:50px;" %>
+		<%= text_field_tag "issue_hours#{row_index}",  obj.blank? ? "" : obj.estimated_hours  , :required => false,  :style => "width:50px;", :onchange => "tableFieldAddition('projPlanTable', 6, 'lbltotal')" %>
 	</td>
 	
 	<td class="lbl-txt-align" headers="issue_start_date">
@@ -39,7 +39,7 @@
 	
 	
 	<td class="lbl-txt-align" headers="issue_assignee" >
-		<%=h select_tag("issue_assignee#{row_index}", 						principals_options_for_select(assigneeUsers, obj.blank? ? nil : obj.assigned_to_id)) %>
+		<%=h select_tag("issue_assignee#{row_index}", principals_options_for_select(assigneeUsers, obj.blank? ? nil : obj.assigned_to_id.to_s)) %>
 	</td>		
 	
 	<td class="lbl-txt-align" headers="lbl_issue_parent" >
@@ -49,6 +49,10 @@
 	
 	<td class="lbl-txt-align" headers="issue_parent" >			
 		<%=h hidden_field_tag("issue_parent#{row_index}",   obj.blank? ? nil : @rootHash[obj.parent_id] )  %>			
+	</td>
+	
+	<td class="lbl-txt-align" id = "is_child#{row_index}" headers="is_child">
+		<%=h hidden_field_tag("is_child#{row_index}",  obj.blank? ? false : (@rootHash[obj.parent_id].blank? ? false : true)  )  %>		
 	</td>
 	
 	<td>

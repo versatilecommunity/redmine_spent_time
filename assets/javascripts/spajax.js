@@ -2,19 +2,7 @@ var row_id = 0;
 var parentId = 1;
 var addChild = false;
 $(document).ready(function()
-{
-	/* $('.datetimepicker').datetimepicker({
-		format:'Y-m-d H:i',
-	}); */
-	
-	/* $('.datetimepicker').each(function() {
-        $(this).datetimepicker({ format:'Y-m-d H:i' });
-	}); */
-	/*$('.datetimepicker').datetimepicker({
-		dateFormat : 'DD/MM/YYYY',
-		timeFormat:  "hh:mm:ss"
-	});*/
-	
+{	
 	$('.date').each(function() {
         $(this).datepicker({ dateFormat: 'yy-mm-dd' });
 	});
@@ -202,9 +190,17 @@ function AddRow(tableId, rowCount)
 		{
 			document.getElementById("lbl_issue_parent"+id).innerHTML = parentId;
 			document.getElementById("issue_parent"+id).value = parentId;
+			document.getElementById("is_child"+parentId).value = true;
 			addChild = false;
 		}
+		else
+		{
+			document.getElementById("lbl_issue_parent"+id).innerHTML = "";
+			document.getElementById("issue_parent"+id).value = "";
+			document.getElementById("is_child"+id).value = false;
+		}
 		document.getElementById("issue_root"+id).value = rowlength;
+		document.getElementById("issue_id"+id).value = "";
 	} 
 	if(document.getElementById('item_index' + rowlength) != null)
 	{
@@ -218,18 +214,41 @@ function deleteRow(tableId, totalrow)
 {
 	var table = document.getElementById(tableId);
 	var rowlength = table.rows.length;
-	document.getElementById(tableId).deleteRow(row_id);	
-	document.getElementById(totalrow).value = document.getElementById(totalrow).value - 1;
-	for(i = 1; i < rowlength-1; i++)
-	{
-		var colCount = table.rows[i].cells.length;			
-		for(var j=0; j<colCount; j++) 
+	var isdelete = true;
+	if(tableId == "projPlanTable")
+    {		
+		rootVal = document.getElementById("issue_root"+row_id).value;
+		for(i = 1; i < rowlength; i++)
 		{
-			var input = document.getElementById(tableId).rows[i].cells[j].getElementsByTagName("*")[0];	
-			input.id = table.rows[i].cells[j].headers + i;
-			input.name = table.rows[i].cells[j].headers + i;					
+			parentVal = document.getElementById("issue_parent"+i).value;
+			if(parentVal == rootVal)
+			{
+				isdelete = false;
+				break;
+			}
 		}
-	}	
+	}
+	
+	if(isdelete)
+	{
+		document.getElementById(tableId).deleteRow(row_id);	
+		document.getElementById(totalrow).value = document.getElementById(totalrow).value - 1;
+		for(i = 1; i < rowlength-1; i++)
+		{
+			var colCount = table.rows[i].cells.length;			
+			for(var j=0; j<colCount; j++) 
+			{
+				var input = document.getElementById(tableId).rows[i].cells[j].getElementsByTagName("*")[0];	
+				input.id = table.rows[i].cells[j].headers + i;
+				input.name = table.rows[i].cells[j].headers + i;					
+			}
+		}	
+	}
+	else
+	{
+		alert("Please delete the sub tasks.");
+	}
+	
 }
 
 function projectIssueOrMemberChanged(curDDId, changeDDId, needBlank, type)
@@ -428,4 +447,24 @@ function projectVersionChanged(curDDId, changeDDId, needBlank)
 	beforeSend: function(){ $this.addClass('ajax-loading'); },
 	complete: function(){  $this.removeClass('ajax-loading'); }	      
 	});
+}
+
+function tableFieldAddition(tableId, position, elementId)
+{
+	var table = document.getElementById(tableId);
+	var rowlength = table.rows.length;
+	var total = 0;
+	for(i = 1; i < rowlength; i++)
+	{
+		var colCount = table.rows[i].cells.length;			
+		for(var j=0; j<colCount; j++) 
+		{
+			if(j == position){
+				var input = document.getElementById(tableId).rows[i].cells[j].getElementsByTagName("*")[0];	
+				total = total + parseInt(input.value);	
+			}
+						
+		}
+	}
+	document.getElementById(elementId).innerHTML = "Total Hours : " + total;
 }

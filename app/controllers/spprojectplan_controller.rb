@@ -28,6 +28,7 @@ class SpprojectplanController < ApplicationController
 	def edit
 		@projObj = nil
 		@versionObj = nil
+		@totalHours = 0
 		@trackers =  Tracker.order(:name)
 		if !params[:project_id].blank?
 			@projObj = Project.where(:id => params[:project_id].to_i)
@@ -40,7 +41,10 @@ class SpprojectplanController < ApplicationController
 		
 		if !params[:project_id].blank? && !params[:version_id].blank?
 			@projPlan = Issue.where(:fixed_version_id => params[:version_id].to_i, :project_id =>  params[:project_id].to_i)
+		elsif !params[:project_id].blank? && params[:version_id].blank?
+			@projPlan = Issue.where(:fixed_version_id => nil, :project_id =>  params[:project_id].to_i)
 		end
+		@totalHours =  @projPlan.sum(:estimated_hours) unless @projPlan.blank?
 	end
 	
 	def destroy
@@ -101,6 +105,7 @@ class SpprojectplanController < ApplicationController
 		rescue => ex
 			logger.error ex.message
 		end
+		
 		issueObj
 	end
 	

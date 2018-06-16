@@ -19,9 +19,9 @@
 		<td>
 			<label style="padding-left:40px;" id="projectDD"><%= l(:label_project) + " " + l(:field_name) + " :" %></label>
 		</td>
-		<td style="padding-left: 40px;">
-			<%= @projObj[0].name %>
-			<%=h hidden_field_tag("project_id",   @projObj[0].id )  %>
+		<td>
+			<%= @projObj[0].name unless @projObj.blank? %>
+			<%=h hidden_field_tag("project_id",  @projObj.blank? ? nil : @projObj[0].id )  %>
 		</td>		
 		<td style="padding-left:120px;">
 			<label><%= l(:field_version) + " " + l(:field_name) + " :" %></label>
