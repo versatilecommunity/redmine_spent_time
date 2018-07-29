@@ -2,20 +2,23 @@ class SpprojectplanController < ApplicationController
   unloadable
   before_filter :require_login
   menu_item :stproject
+  include SptimeHelper
 
 	def index
 		set_filter_session
 		projectId = session[controller_name][:project_id]
 		versionId = session[controller_name][:version_id]
+		cpyId = session[controller_name][:company_id]
+		branchId = session[controller_name][:branch_id]
+		projectIds = getProjectIds(cpyId, branchId, projectId) 
 		sqlQuery = "select p.id as project_id, p.name as project_name, pv.fixed_version_id, pv.hours, pv.start_date, pv.due_date, v.updated_on, v.name as version_name from projects p left join versions v on (v.project_id = p.id) left join (SELECT project_id, fixed_version_id, min(start_date) as start_date, max(due_date) as due_date, sum(estimated_hours) as hours FROM issues group by project_id, fixed_version_id) pv on (pv.project_id = p.id and (pv.fixed_version_id = v.id or pv.fixed_version_id is null))"
 		sqlWhere = ""
-		if !projectId.blank? && !versionId.blank?
-			sqlWhere = " where p.id = #{projectId.to_i} and  pv.fixed_version_id = #{versionId.to_i} "
-		elsif !projectId.blank? && versionId.blank?
-			sqlWhere = " where p.id = #{projectId.to_i}"
-		elsif projectId.blank? && !versionId.blank?
-			sqlWhere = " where pv.fixed_version_id = #{versionId.to_i}"
-		
+		if !projectIds.blank? && !versionId.blank?
+			sqlWhere = " where p.id in (#{projectIds}) and  pv.fixed_version_id = #{versionId.to_i} "
+		elsif !projectIds.blank? && versionId.blank?
+			sqlWhere = " where p.id in (#{projectIds})"
+		elsif projectIds.blank? && !versionId.blank?
+			sqlWhere = " where pv.fixed_version_id = #{versionId.to_i}"		
 		end
 		sqlQuery = sqlQuery + sqlWhere unless sqlWhere.blank?
 		sqlQuery = sqlQuery + " order by v.updated_on desc"

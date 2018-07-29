@@ -209,19 +209,16 @@ include ApplicationHelper
 	end
 
 	def getMembers(projectId, branchId, companyId)
-		Rails.logger.info("======== projectId #{projectId} branchId #{branchId} companyId #{companyId} =====================")
 		@memberObj = []
 		@tempMember = []
 		if !params[:project_id].blank? && 
 			@memberObj = Project.find(params[:project_id].to_i).members.order("#{User.table_name}.firstname ASC,#{User.table_name}.lastname ASC")	
-			Rails.logger.info("========= if #{@memberObj.inspect} ================")
 		elsif User.current.admin?
 			branchObj  = getbranch(branchId, companyId)
 			projObj = branchProjects(branchObj)
 			projObj.each do | entry |
 				@memberObj += entry.members.order("#{User.table_name}.firstname ASC,#{User.table_name}.lastname ASC")
 			end	
-			Rails.logger.info("========= else if #{@memberObj.inspect} ================")
 		else
 			#projObj =  User.current.projects
 			branchObj  = getbranch(branchId, companyId)
@@ -229,7 +226,6 @@ include ApplicationHelper
 			projObj.each do | entry |
 				@memberObj += entry.members.order("#{User.table_name}.firstname ASC,#{User.table_name}.lastname ASC")
 			end	
-			Rails.logger.info("========= else #{@memberObj.inspect} ================")
 		end				
 	end
 
@@ -243,6 +239,29 @@ include ApplicationHelper
 	def aggergateHash
 		hash_frequency = { '' => "", 'W' => l(:label_weekly), 'M'  => l(:label_monthly), 'Q' =>  l(:label_quarterly),  'Y' => l(:label_annually) }
 		hash_frequency
+	end
+	
+	def getProjectIds(cpyId, branchId, projectIds)
+		if !branchId.blank?
+			branchObj = getbranch(branchId, nil)
+			projObj = branchProjects(branchObj)
+			#projectIds = projObj.pluck(:id)
+			projObj.each do |entry|
+				projectIds = projectIds.blank? ? entry.id.to_s : projectIds + "," + entry.id.to_s
+			end
+		else
+			cpyObj = cpyBranches(cpyId)
+			branchIds = cpyObj.pluck(:id)
+
+			branchIds.each do | br |
+				branchObj = getbranch(br, nil)
+				projObj = branchProjects(branchObj)
+				projObj.each do |entry|
+					projectIds = projectIds.blank? ? entry.id.to_s : projectIds + "," + entry.id.to_s
+				end
+			end
+		end
+		projectIds
 	end
 	
 end
