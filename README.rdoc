@@ -2,6 +2,10 @@
 
 Along with the previous properties of Redmine, Our Plugin introduces the phenomenal features of Time Tracking and the updation of data(For both Parent company and its branches).It can be daily, weekly, monthly, yearly and of course 24/7.Extending the ease of Tracking enables the quality of product.
 
+VERSION :
+	0.1 Bulk Time Entry
+	0.2 Project Plan
+
 INSTALLATION:
 	bundle exec rake redmine:plugins:migrate NAME=redmine_spent_time
 	
@@ -9,8 +13,8 @@ UNINSTALLATION:
 	bundle exec rake redmine:plugins:migrate NAME=redmine_spent_time VERSION=0
 	
 Features:
-	~ create company and branches
-	~ Save/Update Time entry in daily, weekly, monthly, quarterly and yearly manner.
+	~ create Project Plan
+	~ Elastic search for project, issue and users in time entry.
 	
 
 Customization:
