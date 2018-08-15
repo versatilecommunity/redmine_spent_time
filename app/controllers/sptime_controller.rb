@@ -2,6 +2,7 @@ class SptimeController < ApplicationController
 	unloadable
 	include SptimeHelper
 	before_filter :require_login
+	menu_item :sptime
 
 
 	def index	
@@ -18,25 +19,27 @@ class SptimeController < ApplicationController
 			entries = TimeEntry.where(:user_id => userId, :spent_on => from.. to)
 		elsif !projectId.blank?
 			projectIds = projectId
-		elsif !branchId.blank?
-			branchObj = getbranch(branchId, nil)
-			projObj = branchProjects(branchObj)
-			#projectIds = projObj.pluck(:id)
-			projObj.each do |entry|
-				projectIds = projectIds.blank? ? entry.id.to_s : projectIds + "," + entry.id.to_s
-			end
-		else
-			cpyObj = cpyBranches(cpyId)
-			branchIds = cpyObj.pluck(:id)
-
-			branchIds.each do | br |
-				branchObj = getbranch(br, nil)
-				projObj = branchProjects(branchObj)
-				projObj.each do |entry|
-					projectIds = projectIds.blank? ? entry.id.to_s : projectIds + "," + entry.id.to_s
-				end
-			end
 		end
+		projectIds = getProjectIds(cpyId, branchId, projectId) 
+		# elsif !branchId.blank?
+			# branchObj = getbranch(branchId, nil)
+			# projObj = branchProjects(branchObj)
+			# #projectIds = projObj.pluck(:id)
+			# projObj.each do |entry|
+				# projectIds = projectIds.blank? ? entry.id.to_s : projectIds + "," + entry.id.to_s
+			# end
+		# else
+			# cpyObj = cpyBranches(cpyId)
+			# branchIds = cpyObj.pluck(:id)
+
+			# branchIds.each do | br |
+				# branchObj = getbranch(br, nil)
+				# projObj = branchProjects(branchObj)
+				# projObj.each do |entry|
+					# projectIds = projectIds.blank? ? entry.id.to_s : projectIds + "," + entry.id.to_s
+				# end
+			# end
+		# end
 		startDate = getStartDate((from.blank? ? Date.today : from.to_date) , frequency)
 		endDate = getEndDate((to.blank?  ? Date.today : to.to_date), frequency)
 		query = weeklyQuery(projectIds, userId, startDate, endDate, frequency)
@@ -291,6 +294,13 @@ class SptimeController < ApplicationController
 	end
 
 	def destroy
+	end
+	
+	def getAdditionalDropdown		
+	end
+	
+	def projectOnChangeMethod
+		"changedMembers();"
 	end
 
 end

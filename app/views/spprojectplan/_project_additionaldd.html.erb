@@ -1,0 +1,10 @@
+<%	projects = Project.where("#{Project.table_name}.status not in(#{Project::STATUS_CLOSED},#{Project::STATUS_ARCHIVED})").order('name') 
+	projArr = options_for_project(projects,false) 
+	versionArr = Version.where(:project_id => projectId).order(:name).pluck(:name, :id)
+%>
+<td style="padding-left:90px;">
+	<label><%= l(:field_version) %></label>
+</td>
+<td>
+	<%=h select_tag('version_id', options_for_select(versionArr)) %>
+</td>

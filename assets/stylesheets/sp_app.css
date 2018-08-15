@@ -1,4 +1,4 @@
-.wk-contextual {text-align: right; white-space: nowrap; line-height:1.4em;margin-top:5px; margin-bottom:10px; padding-left: 10px; font-size:0.9em;}
+.sp-contextual {text-align: right; white-space: nowrap; line-height:1.4em;margin-top:5px; margin-bottom:10px; padding-left: 10px; font-size:0.9em;}
 
 #customers {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -21,4 +21,19 @@
     text-align: left;
     background-color: #418a95;
     color: white;
+}
+.custom-combobox {
+    position: relative;
+    display: inline-block;
+}
+.custom-combobox-toggle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin-left: -1px;
+	padding: 0;
+}
+.custom-combobox-input {
+	margin: 0;
+	padding: 5px 10px;
 }

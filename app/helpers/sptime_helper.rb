@@ -43,19 +43,29 @@ include ApplicationHelper
 	end
 	
 	def branchArray(companyId, needBlank)	
-		brArr = SpBranch.where(:company_id => companyId).order(:name).pluck(:name, :id)
-		brArr.unshift(["",'']) if needBlank
+		unless User.current.userPermission.blank?
+			if (User.current.userPermission.short_name == 'M' || User.current.userPermission.short_name == 'O') && !User.current.admin
+				brArr = SpBranch.where(:id => User.current.branch_id).pluck(:name, :id)
+			end
+		end
+		if User.current.admin
+			brArr = SpBranch.where(:company_id => companyId).order(:name).pluck(:name, :id)
+		end
+		brArr.unshift(["",'']) if needBlank && !brArr.blank?
 		brArr
 	end
 	
 	def projectsArray(branchId, companyId, needBlank)
+	Rails.logger.info("========= branchId #{branchId} companyId #{companyId} ===================")
 		projArr = Array.new
 		branchObj = getbranch(branchId, companyId)
 		if User.current.admin?
 			projObj = branchProjects(branchObj)
 		else
 			projObj = User.current.projects
+			Rails.logger.info("========== else projObj #{projObj.inspect} ==============")
 		end
+		Rails.logger.info("========== projObj #{projObj.inspect} ==============")
 		projObj.each do | entry |
 			projArr  << [entry.name.to_s(), entry.id ] 
 		end		
@@ -65,14 +75,25 @@ include ApplicationHelper
 	
 	def memberArray(projectId, branch_id, company_id, needBlank)
 		memberArr = Array.new		
-		getMembers(projectId, branch_id, company_id)
+		if User.current.admin
+			cpyId = company_id
+		else
+			cpyId = User.current.userBranch.company_id
+		end
+		getMembers(projectId, branch_id, cpyId)
 		count = 0
 		userArr = Array.new
-		@memberObj.each do | entry |
-			if count == 0 || !(userArr.include? (entry.user_id))
-				userArr << entry.user_id
-				memberArr << [entry.name.to_s(), entry.user_id]
-				count = count + 1
+		if !User.current.userPermission.blank?
+			if User.current.userPermission.short_name == 'O' || User.current.userPermission.short_name == 'M' || User.current.userPermission.short_name == 'S'
+				@memberObj.each do | entry |
+					if count == 0 || !(userArr.include? (entry.user_id))
+						userArr << entry.user_id
+						memberArr << [entry.name.to_s(), entry.user_id]
+						count = count + 1
+					end
+				end
+			else
+				memberArr << [User.current.name.to_s(), User.current.id]
 			end
 		end
 		memberArr.unshift(["",'']) if needBlank
@@ -168,10 +189,12 @@ include ApplicationHelper
 	def getbranch(branchId, companyId)
 		projectArr = ""
 		userIds = Array.new
-		unless branchId.blank?
+		if !branchId.blank?
 			branchObj = SpBranch.where(:id => branchId.to_i)
-		else
+		elsif User.current.admin
 			branchObj = SpBranch.where(:company_id => companyId.to_i).order(:name)
+		else 
+			branchObj = SpBranch.where(:id => User.current.branch_id)
 		end
 		branchObj		
 	end
@@ -189,13 +212,13 @@ include ApplicationHelper
 		@memberObj = []
 		@tempMember = []
 		if !params[:project_id].blank? && 
-			@memberObj = Project.find(params[:project_id].to_i).members.order("#{User.table_name}.firstname ASC,#{User.table_name}.lastname ASC")		
+			@memberObj = Project.find(params[:project_id].to_i).members.order("#{User.table_name}.firstname ASC,#{User.table_name}.lastname ASC")	
 		elsif User.current.admin?
 			branchObj  = getbranch(branchId, companyId)
 			projObj = branchProjects(branchObj)
 			projObj.each do | entry |
 				@memberObj += entry.members.order("#{User.table_name}.firstname ASC,#{User.table_name}.lastname ASC")
-			end		
+			end	
 		else
 			#projObj =  User.current.projects
 			branchObj  = getbranch(branchId, companyId)
@@ -216,6 +239,29 @@ include ApplicationHelper
 	def aggergateHash
 		hash_frequency = { '' => "", 'W' => l(:label_weekly), 'M'  => l(:label_monthly), 'Q' =>  l(:label_quarterly),  'Y' => l(:label_annually) }
 		hash_frequency
+	end
+	
+	def getProjectIds(cpyId, branchId, projectIds)
+		if !branchId.blank?
+			branchObj = getbranch(branchId, nil)
+			projObj = branchProjects(branchObj)
+			#projectIds = projObj.pluck(:id)
+			projObj.each do |entry|
+				projectIds = projectIds.blank? ? entry.id.to_s : projectIds + "," + entry.id.to_s
+			end
+		else
+			cpyObj = cpyBranches(cpyId)
+			branchIds = cpyObj.pluck(:id)
+
+			branchIds.each do | br |
+				branchObj = getbranch(br, nil)
+				projObj = branchProjects(branchObj)
+				projObj.each do |entry|
+					projectIds = projectIds.blank? ? entry.id.to_s : projectIds + "," + entry.id.to_s
+				end
+			end
+		end
+		projectIds
 	end
 	
 end
