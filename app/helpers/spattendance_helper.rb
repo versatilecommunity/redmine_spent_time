@@ -1,3 +1,4 @@
 module SpattendanceHelper
 include SptimeHelper
+include CalendarsHelper
 end
