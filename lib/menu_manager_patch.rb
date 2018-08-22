@@ -20,7 +20,7 @@ module Redmine::MenuManager::MenuHelper
     if project && !project.new_record?
       :project_menu
     else
-	  controllerArr = ["sptime", "spprojectplan"]
+	  controllerArr = ["sptime", "spattendance", "spprojectplan"]
 	  externalMenus = call_hook :external_sptime_menus
 	   externalMenus = externalMenus.split(' ')
 	  unless externalMenus.blank?

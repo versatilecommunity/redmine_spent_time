@@ -16,6 +16,7 @@ end
 
 Redmine::MenuManager.map :sptime_menu do |menu|
 	menu.push :sptime, { :controller => 'sptime', :action => 'index' }, :caption => :label_time
+	menu.push :spattendance, { :controller => 'spattendance', :action => 'index' }, :caption => :label_attendance
 	menu.push :stproject, { :controller => 'spprojectplan', :action => 'index' }, :caption => :label_proj_plan
 end
 

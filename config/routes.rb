@@ -40,3 +40,6 @@
 	get 'spprojectplan/getProjectVersion', :to => 'spprojectplan#getProjectVersion'
 	
 	get 'spprojectplan/new', :to => 'spprojectplan#new'
+	
+	get 'spattendance/index', :to => 'spattendance#index'
+	

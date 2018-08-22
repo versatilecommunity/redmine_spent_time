@@ -1,0 +1,3 @@
+module SpattendanceHelper
+include SptimeHelper
+end
