@@ -91,11 +91,13 @@
 		<% projectID = projectArr.blank? ? nil : projectArr[0][1] %>
 		<%= render :partial => controller.getAdditionalDropdown, locals: { projectId: projectID } %>
 	<% end %>
+	<%if isDateRange %>
 	<td style="float:left; !important">
 		<%= l(:label_date_from_to, :start => ( date_field_tag('from', from.blank? ? Date.today : from, {:id => 'from', :size => 10}) +
 		  calendar_for('from')), :end => ( date_field_tag('to', to.blank? ? Date.today+30 : to, {:id => 'to', :size => 10}) +
 		  calendar_for('to'))).html_safe %>
 	<td>
+	<% end %>
 </tr>
 </table >
 <!--
@@ -112,9 +114,11 @@
 </tr>
 </table>
 -->
+<% if isApply %>
 <div style="float:right;">
 <%= submit_tag l(:button_apply), :class => "small", :name => nil%>
  <%= link_to l(:button_clear), {:controller => controller_name, :action => 'index', :tab => controller_name}, :class => 'icon icon-reload' %>
 </div>
+<% end %>
 </fieldset>
 <% end %>

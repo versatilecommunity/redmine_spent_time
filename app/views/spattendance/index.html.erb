@@ -1,8 +1,11 @@
 <h2><%= l(:label_attendance) %></h2>
 <%= javascript_include_tag 'index', :plugin => "redmine_spent_time" %>
+<%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
 
 <%= form_tag({:controller => controller_name, :action => 'index', :project_id => @project},  :method => :get, :id => 'attendance_form') do %>
 <%= hidden_field_tag 'set_filter', '1' %>
+<%= render :partial => 'sptime/sp_filter', locals: { memberDD: true, frequencyDD: false, projectBlank: true, memberload: false, action: 'index', isDateRange: false, isApply: false } %>
+
 <p style="float:right;">
   <%= link_to_previous_month(@year, @month, :accesskey => accesskey(:previous)) %> | <%= link_to_next_month(@year, @month, :accesskey => accesskey(:next)) %>
 </p>
