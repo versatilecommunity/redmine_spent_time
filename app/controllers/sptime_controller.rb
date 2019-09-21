@@ -88,6 +88,7 @@ class SptimeController < ApplicationController
 
 	def weeklyQuery(projectIds, userId, from, to, aggregateBy)
 		interval = getIntervalAndType(aggregateBy)
+		Rails.logger.info("=============== from #{from} ===================")
 		sqlQuery = "select t.user_id, sum(t.hours)as total_hours, p.start_date, p.end_date from (select "+getAddDateIntervalStr(from, interval[1], interval[0], false)+" start_date, " +
 		+ getAddDateStr(getAddDateIntervalStr(from, interval[1], interval[0], true), -1, false)+ " end_date from 
 		(select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,(select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1, (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2, (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3, (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9)t4 

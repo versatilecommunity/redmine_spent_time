@@ -468,3 +468,111 @@ function tableFieldAddition(tableId, position, elementId)
 	}
 	document.getElementById(elementId).innerHTML = "Total Hours : " + total;
 }
+
+//Validates the start and end time
+function validateHr(hrFld,day, element)
+{		
+	var hrFldID = hrFld.id;
+	if(document.getElementById(hrFldID) != null)
+	{
+		var hrVal = document.getElementById(hrFldID).value;	
+	}
+	else
+	{
+		hrVal = hrFld;
+	}
+	if(hrVal == "")
+	{
+		hrFld.value = "0:00";
+		hrVal = "0:00";
+	}
+	clkinTime = convertTimeToSec(document.getElementById(element[0]).value);
+	clkoutTime = convertTimeToSec(document.getElementById(element[1]).value);
+	if(hrVal.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/) == null)
+	{
+		hrFld.value = hrFld.defaultValue;
+		alert("Not a valid time format");
+	}
+	else if((clkinTime > clkoutTime) || ( isNaN(clkinTime) && !isNaN(clkoutTime) ) )
+	{		 
+		var msg = ( isNaN(clkinTime) && !isNaN(clkoutTime) ) ? "Please enter Clock in." : "The Clock in time can't be greater then clock out.";
+		hrFld.value = hrFld.defaultValue;
+		alert(msg);
+	}
+	else if( !isNaN(clkinTime) && !isNaN(clkoutTime) )
+	{	
+		var minutessdiff = diff(document.getElementById(element[0]).value, document.getElementById(element[1]).value);
+		document.getElementById(element[2]).value = minutessdiff;	
+		var attnDayEntriesCnt = document.getElementById('attnDayEntriesCnt').value;
+		var arr = [];
+		for(j = 0 ; j < attnDayEntriesCnt ; j++ )
+		{
+			arr.push(document.getElementById("hoursdiff"+j).value);
+		}
+		document.getElementById("tothours").value = totalTimeString(arr);	
+		
+		
+	}
+}
+
+function convertTimeToSec(timeval)
+{
+ var timeArr = timeval.split(':');
+ seconds = (timeArr[0]*3600)+(timeArr[1]*60);
+ return seconds;
+}
+
+function diff(start, end) {
+    start = start.split(":");
+    end = end.split(":");
+    var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+    var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+    var diff = endDate.getTime() - startDate.getTime();
+    var hours = Math.floor(diff / 1000 / 60 / 60);
+    diff -= hours * 1000 * 60 * 60;
+    var minutes = Math.floor(diff / 1000 / 60);
+    
+    return (hours < 9 ? "0" : "") + hours + ":" + (minutes < 9 ? "0" : "") + minutes;
+}
+
+// assuming num will always be positive
+function zeroPad(num) {
+  var str = String(num);
+  if (str.length < 2) {
+    return '0' + str;
+  }
+
+  return str;
+}
+
+// assuming your time strings will always be (H*:)(m{0,2}:)s{0,2} and never negative
+function totalTimeString(timeStrings) {
+  var totals = timeStrings.reduce(function (a, timeString) {
+    var parts = timeString.split(':');
+    var temp;
+    if (parts.length > 0) {
+      temp = Number(parts.pop()) + a.seconds;
+      a.seconds = temp % 60;
+      if (parts.length > 0) {
+        temp = (Number(parts.pop()) + a.minutes) + ((temp - a.seconds) / 60);
+        a.minutes = temp % 60;
+        a.hours = a.hours + ((temp - a.minutes) / 60);
+        if (parts.length > 0) {
+          a.hours += Number(parts.pop());
+        }
+      }
+    }
+
+    return a;
+  }, {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+// returned string will be HH(H+):mm:ss
+  return [
+    //zeroPad(totals.hours),
+    zeroPad(totals.minutes),
+    zeroPad(totals.seconds)
+  ].join(':');
+}

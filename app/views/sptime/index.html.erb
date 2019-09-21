@@ -1,6 +1,6 @@
 <h2><%= l(:label_time_sheet) %></h2>
 <%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
-<%= render :partial => 'sp_filter', locals: { memberDD: true, frequencyDD: true, projectBlank: true, memberload: true, action: 'index', isDateRange: true, isApply: true } %>
+<%= render :partial => 'sp_filter', locals: { memberDD: true, frequencyDD: true, projectBlank: true, memberload: true, action: 'index', isDateRange: true, isApply: true, isCalendar: false } %>
 <%= link_to l(:label_new) + " " + l(:label_time_sheet), url_for(:controller => controller_name, :action => 'new'), :class => 'icon icon-time-add', :style=> "float:right" %>
 
 <br/>

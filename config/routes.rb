@@ -43,3 +43,7 @@
 	
 	get 'spattendance/index', :to => 'spattendance#index'
 	
+	get 'spattendance/clockedit', :to => 'spattendance#clockedit'
+	
+	post 'spattendance/update', :to => 'spattendance#update'
+	

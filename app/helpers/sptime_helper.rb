@@ -125,13 +125,13 @@ include ApplicationHelper
 			dtfield = "'#{dtfield}'"
 		end
 		if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'			 
-			dateSqlStr = "date('#{dtfield}') + "	+ noOfDays.to_s
+			dateSqlStr = "date(#{dtfield}) + "	+ noOfDays.to_s
 		elsif ActiveRecord::Base.connection.adapter_name == 'SQLite'			 
-			dateSqlStr = "date('#{dtfield}' , '+' || " + "(#{noOfDays.to_s})" + " || ' days')"
+			dateSqlStr = "date(#{dtfield} , '+' || " + "(#{noOfDays.to_s})" + " || ' days')"
 		elsif ActiveRecord::Base.connection.adapter_name == 'SQLServer'		
 			dateSqlStr = "DateAdd(d, " + noOfDays.to_s + ", #{dtfield})"
 		else
-			dateSqlStr = "adddate('#{dtfield}', " + noOfDays.to_s + ")"
+			dateSqlStr = "adddate(#{dtfield}, " + noOfDays.to_s + ")"
 		end		
 		dateSqlStr
 	end

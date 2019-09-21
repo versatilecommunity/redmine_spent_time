@@ -5,120 +5,129 @@
 	versionUrl="<%= "#{url_for(:controller => "spprojectplan", :action => 'getProjectVersion')}" %>";
 </script>
 <%= form_tag({:controller => controller_name, :action => action}, :method => :get, :id => 'query_form') do %>
-<%  branchArr = Array.new
-	projectArr = Array.new
-	memberArr = Array.new	
-	bId =  nil
-	cId = nil
-%>
-<%
-	companyId =session[controller_name][:company_id]
-	branchId =session[controller_name][:branch_id]
-	projectId =session[controller_name][:project_id]
-	userId =session[controller_name][:user_id]
-	from = session[controller_name][:from]
-	to = session[controller_name][:to]
-	frequency = session[controller_name][:frequency]
-%>
-<%  companyArr = companyArray(false) 
-	if !companyArr.blank? && companyId.blank?
-		cId = companyArr[0][1]
-	elsif companyId.blank?
-		cId = User.current.userBranch.company_id unless User.current.userBranch.blank?
-	else
-		cId = companyId
-	end
-	branchArr = branchArray((companyId.blank? ? companyArr[0][1] : companyId) , true) unless companyArr.blank?
-	if !branchArr.blank? && branchId.blank?
-		bId = branchArr[0][1]
-	elsif branchId.blank?
-		bId = User.current.branch_id
-	else
-		bId = branchId
-	end
-	
-	projectArr = projectsArray(bId, (cId),  projectBlank) 
-	memberArr = memberArray((projectId.blank? ? projectArr[0][1] : projectId), bId, (cId), true) unless projectArr.blank?
-	
-	frequencyHash = aggergateHash
-%>
+	<%  branchArr = Array.new
+		projectArr = Array.new
+		memberArr = Array.new	
+		bId =  nil
+		cId = nil
+	%>
+	<%
+		companyId =session[controller_name][:company_id]
+		branchId =session[controller_name][:branch_id]
+		projectId =session[controller_name][:project_id]
+		userId =session[controller_name][:user_id]
+		from = session[controller_name][:from]
+		to = session[controller_name][:to]
+		frequency = session[controller_name][:frequency]
+	%>
+	<%  companyArr = companyArray(false) 
+		if !companyArr.blank? && companyId.blank?
+			cId = companyArr[0][1]
+		elsif companyId.blank?
+			cId = User.current.userBranch.company_id unless User.current.userBranch.blank?
+		else
+			cId = companyId
+		end
+		branchArr = branchArray((companyId.blank? ? companyArr[0][1] : companyId) , true) unless companyArr.blank?
+		if !branchArr.blank? && branchId.blank?
+			bId = branchArr[0][1]
+		elsif branchId.blank?
+			bId = User.current.branch_id
+		else
+			bId = branchId
+		end
+		
+		projectArr = projectsArray(bId, (cId),  projectBlank) 
+		memberArr = memberArray((projectId.blank? ? projectArr[0][1] : projectId), bId, (cId), true) unless projectArr.blank?
+		
+		frequencyHash = aggergateHash
+	%>
 
-<script type="text/javascript"> 
-	$(document).ready(function()
-	{
-		//cpyBranchChanged('company_id', 'branch_id',  true, 'branch');
-		$('.date').each(function() {
-				$(this).datepicker({ dateFormat: 'yy-mm-dd' });
+	<script type="text/javascript"> 
+		$(document).ready(function()
+		{
+			//cpyBranchChanged('company_id', 'branch_id',  true, 'branch');
+			$('.date').each(function() {
+					$(this).datepicker({ dateFormat: 'yy-mm-dd' });
+			});
 		});
-	});
-  
-</script>
-<%= hidden_field_tag "searchlist", controller_name %>
-<fieldset class="box tabular">
-<table >
-<tr>
-<% unless User.current.userPermission.blank?  %>
-	<% if User.current.admin  %>
-		<th><%= l(:label_company) %></th>
-		<td>	
-			<%=h select_tag('company_id', options_for_select(companyArr, :selected=> companyId.blank? ? companyArr : companyId), :onchange => "cpyBranchChanged(this.id, 'branch_id',  true, 'branch', #{projectBlank}, #{projectBlank}); ") %>
-		</td>
+	  
+	</script>
+	<%= hidden_field_tag "searchlist", controller_name %>
+	<fieldset class="box tabular">
+	<table >
+		<tr>
+			<% unless User.current.userPermission.blank?  %>
+				<% if User.current.admin  %>
+					<th><%= l(:label_company) %></th>
+					<td>	
+						<%=h select_tag('company_id', options_for_select(companyArr, :selected=> companyId.blank? ? companyArr : companyId), :onchange => "cpyBranchChanged(this.id, 'branch_id',  true, 'branch', #{projectBlank}, #{projectBlank}); ") %>
+					</td>
+				<% end %>
+				<% if User.current.admin || User.current.userPermission.short_name == 'M'  %>
+					<th><%= l(:label_branches) %></th>
+					<td>
+						<%=h select_tag('branch_id', options_for_select(branchArr, :selected=> bId), :onchange => "branchProjectChanged(this.id, 'project_id', #{projectBlank}, 'project', #{projectBlank}); ") %>
+					</td>
+				<% end %>
+			<% end %>
+				<th><%= l(:label_project) %></th>
+				<td>
+					<%=h select_tag('project_id', options_for_select(projectArr, :selected=> projectId.blank? ? projectArr : projectId), :onchange => "#{controller.projectOnChangeMethod}") %>
+				</td>
+				<% if memberDD %>
+				<th><%= l(:label_member_plural) %></th>
+				<td>
+					<%=h select_tag('user_id', options_for_select(memberArr, :selected=> userId.blank? ? memberArr : userId)) %>
+				</td>
+				<% end %>
+				<% if frequencyDD %>
+				<th><%= l(:label_approve_frequency) %></th>
+				<td>
+					<%=h select_tag('frequency', options_for_select(frequencyHash.invert, :selected=> frequency.blank? ? frequencyHash.invert : frequency)) %>
+				</td>
+				<% end %>
+				<% unless controller.getAdditionalDropdown.blank? %>
+					<% projectID = projectArr.blank? ? nil : projectArr[0][1] %>
+					<%= render :partial => controller.getAdditionalDropdown, locals: { projectId: projectID } %>
+				<% end %>
+				<%if isDateRange %>
+				<td style="float:left; !important">
+					<%= l(:label_date_from_to, :start => ( date_field_tag('from', from.blank? ? Date.today : from, {:id => 'from', :size => 10}) +
+					  calendar_for('from')), :end => ( date_field_tag('to', to.blank? ? Date.today+30 : to, {:id => 'to', :size => 10}) +
+					  calendar_for('to'))).html_safe %>
+				<td>
+			<% end %>
+		</tr>
+	</table >
+	
+	<% if isApply %>
+	<div style="float:right;">
+	<%= submit_tag l(:button_apply), :class => "small", :name => nil%>
+	 <%= link_to l(:button_clear), {:controller => controller_name, :action => 'index', :tab => controller_name}, :class => 'icon icon-reload' %>
+	</div>
 	<% end %>
-	<% if User.current.admin || User.current.userPermission.short_name == 'M'  %>
-		<th><%= l(:label_branches) %></th>
-		<td>
-			<%=h select_tag('branch_id', options_for_select(branchArr, :selected=> bId), :onchange => "branchProjectChanged(this.id, 'project_id', #{projectBlank}, 'project', #{projectBlank}); ") %>
-		</td>
-	<% end %>
-<% end %>
-	<th><%= l(:label_project) %></th>
-	<td>
-		<%=h select_tag('project_id', options_for_select(projectArr, :selected=> projectId.blank? ? projectArr : projectId), :onchange => "#{controller.projectOnChangeMethod}") %>
-	</td>
-	<% if memberDD %>
-	<th><%= l(:label_member_plural) %></th>
-	<td>
-		<%=h select_tag('user_id', options_for_select(memberArr, :selected=> userId.blank? ? memberArr : userId)) %>
-	</td>
-	<% end %>
-	<% if frequencyDD %>
-	<th><%= l(:label_approve_frequency) %></th>
-	<td>
-		<%=h select_tag('frequency', options_for_select(frequencyHash.invert, :selected=> frequency.blank? ? frequencyHash.invert : frequency)) %>
-	</td>
-	<% end %>
-	<% unless controller.getAdditionalDropdown.blank? %>
-		<% projectID = projectArr.blank? ? nil : projectArr[0][1] %>
-		<%= render :partial => controller.getAdditionalDropdown, locals: { projectId: projectID } %>
-	<% end %>
-	<%if isDateRange %>
-	<td style="float:left; !important">
-		<%= l(:label_date_from_to, :start => ( date_field_tag('from', from.blank? ? Date.today : from, {:id => 'from', :size => 10}) +
-		  calendar_for('from')), :end => ( date_field_tag('to', to.blank? ? Date.today+30 : to, {:id => 'to', :size => 10}) +
-		  calendar_for('to'))).html_safe %>
-	<td>
-	<% end %>
-</tr>
-</table >
-<!--
-<table style="width:100%; padding-left:10px;">
-<tr>
-<td style="float:left; !important">
-<%#= l(:label_date_from_to, :start => ( date_field_tag('from', from.blank? ? Date.today : from, {:id => 'from', :size => 10}) +
-  calendar_for('from')), :end => ( date_field_tag('to', to.blank? ? Date.today+30 : to, {:id => 'to', :size => 10}) +
-  calendar_for('to'))).html_safe %>
-<td>
+	<% if isCalendar %>
+		<%= hidden_field_tag 'set_filter', '1' %>
+		
+		<p style="float:right;">
+		  <%= link_to_previous_month(@year, @month, :accesskey => accesskey(:previous)) %> | <%= link_to_next_month(@year, @month, :accesskey => accesskey(:next)) %>
+		</p>
+		
+		<table>
+			<tr>
+				<td style="padding-left:50px;"><%= label_tag('month', l(:label_month)) %></td>
+				<td><%= select_month(@month, :prefix => "month", :id => "month", :discard_type => true) %></td>
+		
+				<td style="padding-left:50px;"><%= label_tag('year', l(:label_year)) %></td>
+				<td><%= select_year(@year, :prefix => "year", :discard_type => true) %></td>
+		
 
-<td style= 	"float:right;" ><%#= submit_tag l(:button_apply), :class => "small", :name => nil%>
- <%#= link_to l(:button_clear), {:controller => controller_name, :action => 'index', :tab => controller_name}, :class => 'icon icon-reload' %></td>
-</tr>
-</table>
--->
-<% if isApply %>
-<div style="float:right;">
-<%= submit_tag l(:button_apply), :class => "small", :name => nil%>
- <%= link_to l(:button_clear), {:controller => controller_name, :action => 'index', :tab => controller_name}, :class => 'icon icon-reload' %>
-</div>
-<% end %>
-</fieldset>
+				<td><%= link_to_function l(:button_apply), '$("#query_form").submit()', :class => 'icon icon-checked' %></td>
+				<td><%= link_to l(:button_clear), { :project_id => @project, :set_filter => 1 }, :class => 'icon icon-reload' %></td>
+			</tr>
+		</table>
+		
+	<% end %>
+	</fieldset>
 <% end %>

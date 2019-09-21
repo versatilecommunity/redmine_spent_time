@@ -9,7 +9,7 @@
 %>
 
 <%#= form_tag({:controller => "spprojectplan", :action => 'edit'}, :method => :get, :id => 'query_form') do %>
-<%= render :partial => 'sptime/sp_filter', locals: { memberDD: false, frequencyDD: false, projectBlank: false, memberload: false, action: 'edit', isDateRange: true, isApply: true } %>
+<%= render :partial => 'sptime/sp_filter', locals: { memberDD: false, frequencyDD: false, projectBlank: false, memberload: false, action: 'edit', isDateRange: true, isApply: true, isCalendar: false } %>
 
 <p><%#= submit_tag l(:label_continue), :class => "small", :name => nil %></p>
 <%# end %>

@@ -68,7 +68,7 @@ class SpattendanceController < ApplicationController
 		noOfDays = 't4.i*1*10000 + t3.i*1*1000 + t2.i*1*100 + t1.i*1*10 + t0.i*1'
 		sqlQuery = "select vw.id as user_id, vw.firstname, vw.lastname, vw.created_on, vw.selected_date as entry_date, evw.start_time, evw.end_time, evw.hours from
 			(select u.id, u.firstname, u.lastname, u.created_on, v.selected_date from" + 
-			"(select " + getAddDateStr(@from, noOfDays, false) + " selected_date from " +
+			"(select " + getAddDateStr("'#{@from}'", noOfDays, false) + " selected_date from " +
 			"(select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
 			 (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
 			 (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
@@ -90,6 +90,49 @@ class SpattendanceController < ApplicationController
 			left join sp_attendances a  on u.id = a.user_id and #{getConvertDateStr('a.start_time')} = '#{params[:date]}' where u.id = '#{params[:user_id]}' ORDER BY a.start_time"
 		@wkattnEntries = SpAttendance.find_by_sql(sqlQuery)
 	end	
+	
+	def update
+		errorMsg =nil
+		sucessMsg = nil
+		endtime = nil
+		for i in 0..params[:attnDayEntriesCnt].to_i-1
+			starttime = params[:startdate] + " " +  params["attnstarttime#{i}"] + ":00"
+			entry_start_time = DateTime.strptime(starttime, "%Y-%m-%d %T") rescue starttime
+			endtime = params[:startdate] + " " +  params["attnendtime#{i}"] + ":00" if !params["attnendtime#{i}"].blank?
+			entry_end_time = DateTime.strptime(endtime, "%Y-%m-%d %T") rescue endtime
+			hoursDiff = params[:startdate] + " " +  params["hoursdiff#{i}"] + ":00"
+			entry_hours_diff = DateTime.strptime(hoursDiff, "%Y-%m-%d %T") rescue hoursDiff
+			if params["attnstarttime#{i}"] == '0:00' && params["attnendtime#{i}"] == '0:00' 
+				spAttendance =  SpAttendance.find(params["attnEntriesId#{i}"].to_i)	if !params["attnEntriesId#{i}"].blank?
+				spAttendance.destroy()
+				sucessMsg = l(:notice_successful_delete)
+			else
+				if !params["attnEntriesId#{i}"].blank?
+					spAttendance =  SpAttendance.find(params["attnEntriesId#{i}"].to_i)				
+					spAttendance.start_time =  getFormatedTimeEntry(entry_start_time)
+					spAttendance.end_time = getFormatedTimeEntry(entry_end_time) #if !entry_end_time.blank?
+					workedHours = spAttendance.end_time - spAttendance.start_time
+					unless workedHours.blank?
+						workedHours = (workedHours/1.hour).round(2) unless workedHours.blank?
+					end
+					spAttendance.hours = workedHours
+					spAttendance.save()
+					sucessMsg = l(:notice_successful_update) 				
+				else
+					addNewAttendance(getFormatedTimeEntry(entry_start_time),getFormatedTimeEntry(entry_end_time), params[:user_id].to_i)
+					sucessMsg = l(:notice_successful_update)
+				end			
+			end
+		end
+		
+		if errorMsg.nil?	
+			redirect_to :controller => 'spattendance',:action => 'index'
+			flash[:notice] = sucessMsg 
+		else
+			flash[:error] = errorMsg
+			redirect_to :action => 'edit'
+		end	
+	end
 	
 	def getMembersbyGroup
 		group_by_users=""
@@ -223,6 +266,29 @@ class SpattendanceController < ApplicationController
 			rangeStr = " LIMIT " + @limit.to_s +	" OFFSET " + @offset.to_s
 		end
 		rangeStr
+	end
+	
+	def getFormatedTimeEntry(entryDateTime)
+		entryTime = nil
+		if !entryDateTime.blank?
+			entryLocal = entryDateTime.change(:offset => Time.current.localtime.strftime("%:z"))
+			entryTime = Time.parse("#{entryLocal.to_date.to_s} #{entryLocal.utc.to_time.to_s} ").localtime
+		end
+		entryTime
+	end
+	
+	def addNewAttendance(startEntry,endEntry,userId) 
+		spattendance = SpAttendance.new
+		spattendance.start_time = startEntry
+		spattendance.end_time = endEntry
+		workedHours = spattendance.end_time - spattendance.start_time
+		unless workedHours.blank?
+			workedHours = (workedHours/1.hour).round(2) unless workedHours.blank?
+		end
+		spattendance.hours = workedHours
+		spattendance.user_id = userId
+		spattendance.save()
+		spattendance
 	end
 
 end
