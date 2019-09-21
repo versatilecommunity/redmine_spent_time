@@ -1,6 +1,6 @@
 class SpattendanceController < ApplicationController
   unloadable
-  before_filter :require_login
+  before_action :require_login
   menu_item :spattendance
   include SptimeHelper
 
@@ -87,7 +87,7 @@ class SpattendanceController < ApplicationController
 	
 	def clockedit
 		sqlQuery = "select a.id,a.user_id, a.start_time, a.end_time, a.hours, u.firstname, u.lastname FROM users u
-			left join sp_attendances a  on u.id = a.user_id and #{getConvertDateStr('a.start_time')} = '#{params[:date]}' where u.id = '#{params[:user_id]}' ORDER BY a.start_time"
+			left join sp_attendances a  on u.id = a.user_id and #{getConvertDateStr('a.start_time')} = '#{params[:date].to_s}' where u.id = '#{params[:user_id].to_i}' ORDER BY a.start_time"
 		@wkattnEntries = SpAttendance.find_by_sql(sqlQuery)
 	end	
 	
@@ -103,11 +103,13 @@ class SpattendanceController < ApplicationController
 			hoursDiff = params[:startdate] + " " +  params["hoursdiff#{i}"] + ":00"
 			entry_hours_diff = DateTime.strptime(hoursDiff, "%Y-%m-%d %T") rescue hoursDiff
 			if params["attnstarttime#{i}"] == '0:00' && params["attnendtime#{i}"] == '0:00' 
+				Rails.logger.info("========= delete ===================")
 				spAttendance =  SpAttendance.find(params["attnEntriesId#{i}"].to_i)	if !params["attnEntriesId#{i}"].blank?
 				spAttendance.destroy()
 				sucessMsg = l(:notice_successful_delete)
 			else
 				if !params["attnEntriesId#{i}"].blank?
+					Rails.logger.info("========= update ===================")
 					spAttendance =  SpAttendance.find(params["attnEntriesId#{i}"].to_i)				
 					spAttendance.start_time =  getFormatedTimeEntry(entry_start_time)
 					spAttendance.end_time = getFormatedTimeEntry(entry_end_time) #if !entry_end_time.blank?
@@ -119,7 +121,8 @@ class SpattendanceController < ApplicationController
 					spAttendance.save()
 					sucessMsg = l(:notice_successful_update) 				
 				else
-					addNewAttendance(getFormatedTimeEntry(entry_start_time),getFormatedTimeEntry(entry_end_time), params[:user_id].to_i)
+					Rails.logger.info("========= addNewAttendance start ===================")
+					addNewAttendance(getFormatedTimeEntry(entry_start_time),getFormatedTimeEntry(entry_end_time), params[:user_id].to_i, params[:branch_id])
 					sucessMsg = l(:notice_successful_update)
 				end			
 			end
@@ -277,7 +280,8 @@ class SpattendanceController < ApplicationController
 		entryTime
 	end
 	
-	def addNewAttendance(startEntry,endEntry,userId) 
+	def addNewAttendance(startEntry,endEntry,userId, branchId) 
+		Rails.logger.info("========= addNewAttendance ===================")
 		spattendance = SpAttendance.new
 		spattendance.start_time = startEntry
 		spattendance.end_time = endEntry
@@ -287,6 +291,7 @@ class SpattendanceController < ApplicationController
 		end
 		spattendance.hours = workedHours
 		spattendance.user_id = userId
+		spattendance.branch_id = branchId
 		spattendance.save()
 		spattendance
 	end

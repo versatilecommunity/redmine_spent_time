@@ -1,6 +1,6 @@
 class SpprojectplanController < ApplicationController
   unloadable
-  before_filter :require_login
+  before_action :require_login
   menu_item :stproject
   include SptimeHelper
 

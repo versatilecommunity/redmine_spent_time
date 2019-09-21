@@ -1,5 +1,6 @@
-<%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %><%= form_tag({}) do -%>	
-<%= hidden_field_tag 'back_url', url_for(params) %>
+<%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
+<%#= form_tag({}) do -%>	
+<%= hidden_field_tag 'back_url', url_for(params) unless params  %>
 	<table class="list time-entries">
 		<thead>
 			<tr>
@@ -14,13 +15,13 @@
 		<tbody>
 			<% @clk_entries.each do |entry| %>
 				<tr>
-					<td class="lbl-txt-align"><%=h entry.firstname %></td>
+					<td class="lbl-txt-align"><%=h entry.firstname.to_s + " " + entry.lastname %></td>
 					<td class="lbl-txt-align"><%=h entry.entry_date %></td>
 					<td class="lbl-txt-align"><%=h !entry.start_time ? "" : entry.start_time.localtime.strftime('%R') %></td>
 					<td class="lbl-txt-align"><%=h !entry.end_time ? "" : entry.end_time.localtime.strftime('%R') %></td>
 					<td class="lbl-txt-align"><%=h !entry.hours ? "" : (entry.hours).round(2) %></td>
 					<td align="center">
-						<%= link_to image_tag('edit.png'), {:controller => controller.controller_name, :action => 'clockedit', :user_id => entry.user_id, :date => entry.entry_date,  :tab => controller.controller_name},
+						<%= link_to image_tag('edit.png'), {:controller => controller.controller_name, :action => 'clockedit', :user_id => entry.user.id, :date => entry.entry_date, :branch_id => entry.user.branch_id,  :tab => controller.controller_name},
 														   :title => l(:button_edit) %>
 
 					</td>
@@ -28,4 +29,4 @@
 			<% end %>
 		</tbody>
 	</table>
-<% end -%>
+<%# end -%>

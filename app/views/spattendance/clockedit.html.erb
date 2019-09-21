@@ -1,4 +1,4 @@
-	<%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
+<%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
 <%= form_tag({:controller => 'spattendance', :action => 'update'}, :method => :post, :id => 'save_ClockInOut') do %>
 	<h2><%= l(:label_clock_in) + " / " + l(:label_clock_out) + " " + l(:field_summary) %></h2>
 	<table>
@@ -51,6 +51,7 @@
 	<%=h hidden_field_tag('attnDayEntriesCnt', start_time.blank? ? 1 : start_time.length) %>
 	<%=h hidden_field_tag('startdate', params[:date] ) %>
 	<%=h hidden_field_tag('user_id', params[:user_id] ) %>
+	<%=h hidden_field_tag('branch_id', params[:branch_id] ) %>
 	<% j = 0  %>
 	<% totalhours = 0  %>
 	<% loop do  %>	
