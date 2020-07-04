@@ -1,9 +1,24 @@
-<%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
-<%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
-<script type="text/javascript"> 
+<% content_for :header_tags do %>
+  <%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
+  <script type="text/javascript"> 
 	cpybranchUrl="<%= "#{url_for(:controller => "sptime", :action => 'getCpyBranches')}" %>";
 	versionUrl="<%= "#{url_for(:controller => "spprojectplan", :action => 'getProjectVersion')}" %>";
 </script>
+
+<script type="text/javascript"> 
+	$(document).ready(function()
+	{
+		//cpyBranchChanged('company_id', 'branch_id',  true, 'branch');
+		$('.date').each(function() {
+				$(this).datepicker({ dateFormat: 'yy-mm-dd' });
+		});
+	});
+  
+</script>
+<% end %>
+
+<%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
+
 <%= form_tag({:controller => controller_name, :action => action}, :method => :get, :id => 'query_form') do %>
 <%  branchArr = Array.new
 	projectArr = Array.new
@@ -43,16 +58,7 @@
 	frequencyHash = aggergateHash
 %>
 
-<script type="text/javascript"> 
-	$(document).ready(function()
-	{
-		//cpyBranchChanged('company_id', 'branch_id',  true, 'branch');
-		$('.date').each(function() {
-				$(this).datepicker({ dateFormat: 'yy-mm-dd' });
-		});
-	});
-  
-</script>
+
 <%= hidden_field_tag "searchlist", controller_name %>
 <fieldset class="box tabular">
 <table >
@@ -61,7 +67,7 @@
 	<% if User.current.admin  %>
 		<th><%= l(:label_company) %></th>
 		<td>	
-			<%=h select_tag('company_id', options_for_select(companyArr, :selected=> companyId.blank? ? companyArr : companyId), :onchange => "cpyBranchChanged(this.id, 'branch_id',  true, 'branch', #{projectBlank}, #{projectBlank}); ") %>
+			<%=h select_tag('company_id', options_for_select(companyArr, :selected=> companyId.blank? ? companyArr : companyId), :onchange => "alert('test company'); cpyBranchChanged(this.id, 'branch_id',  true, 'branch', #{projectBlank}, #{projectBlank}); ") %>
 		</td>
 	<% end %>
 	<% if User.current.admin || User.current.userPermission.short_name == 'M'  %>

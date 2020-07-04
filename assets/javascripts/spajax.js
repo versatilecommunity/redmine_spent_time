@@ -55,6 +55,8 @@ function loadDD(itemStr, dropdown, needBlankOption, skipFirst, blankText)
 
 function cpyBranchChanged(curDDId, changeDDId,  needBlank, type, projectBlank, loadMember)
 {	
+alert("js function");
+alert("cpybranchUrl ==> " + cpybranchUrl);
 	var currDD = document.getElementById(curDDId);
 	var needBlankOption = needBlank;
 	var changeDD = document.getElementById(changeDDId);	

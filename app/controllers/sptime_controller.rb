@@ -1,7 +1,7 @@
 class SptimeController < ApplicationController
 	unloadable
 	include SptimeHelper
-	before_filter :require_login
+	before_action :require_login
 	menu_item :sptime
 
 
@@ -232,6 +232,7 @@ class SptimeController < ApplicationController
 	end
 
 	def getCpyBranches
+	logger.info("========== controler method ===========");
 		user = User.current
 		responseArr = "" 
 		case params[:filter_type] 

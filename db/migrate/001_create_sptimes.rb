@@ -1,4 +1,4 @@
-class CreateSptimes < ActiveRecord::Migration
+class CreateSptimes < ActiveRecord::Migration[5.2]
   def change
 	create_table :sp_addresses do |t|
 	  t.string :address1
