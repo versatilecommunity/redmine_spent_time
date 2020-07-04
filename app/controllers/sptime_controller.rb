@@ -232,7 +232,6 @@ class SptimeController < ApplicationController
 	end
 
 	def getCpyBranches
-	logger.info("========== controler method ===========");
 		user = User.current
 		responseArr = "" 
 		case params[:filter_type] 
@@ -261,7 +260,7 @@ class SptimeController < ApplicationController
 		end
 
 		respond_to do |format|
-			format.text  { render :text => responseArr }
+			format.text  { render :plain => responseArr }
 		end		 
 	end  
 
