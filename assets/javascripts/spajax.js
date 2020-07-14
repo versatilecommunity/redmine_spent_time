@@ -7,7 +7,7 @@ $(document).ready(function()
         $(this).datepicker({ dateFormat: 'yy-mm-dd' });
 	});
 	var table = document.getElementById('timeEntryTable');
-	if(document.getElementById('timeEntryTable') != null)
+	/* if(document.getElementById('timeEntryTable') != null)
 	{
 		var rowlength = table.rows.length;
 		for(var i =0; i< rowlength; i++)
@@ -20,7 +20,7 @@ $(document).ready(function()
 			ddAutoComplete(memberId, false);
 		}
 	
-	}
+	} */
 	
 });
 

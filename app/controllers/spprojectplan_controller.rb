@@ -121,7 +121,7 @@ class SpprojectplanController < ApplicationController
 			end
 		end
 		respond_to do |format|
-			format.text  { render :text => versionStr }
+			format.text  { render :plain => versionStr }
 		end
 	end
 	

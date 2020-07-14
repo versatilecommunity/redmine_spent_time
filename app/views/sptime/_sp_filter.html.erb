@@ -67,7 +67,7 @@
 	<% if User.current.admin  %>
 		<th><%= l(:label_company) %></th>
 		<td>	
-			<%=h select_tag('company_id', options_for_select(companyArr, :selected=> companyId.blank? ? companyArr : companyId), :onchange => "alert('test company'); cpyBranchChanged(this.id, 'branch_id',  true, 'branch', #{projectBlank}, #{projectBlank}); ") %>
+			<%=h select_tag('company_id', options_for_select(companyArr, :selected=> companyId.blank? ? companyArr : companyId), :onchange => "cpyBranchChanged(this.id, 'branch_id',  true, 'branch', #{projectBlank}, #{projectBlank}); ") %>
 		</td>
 	<% end %>
 	<% if User.current.admin || User.current.userPermission.short_name == 'M'  %>

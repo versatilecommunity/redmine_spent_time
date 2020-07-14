@@ -1,3 +1,4 @@
+<% content_for :header_tags do %>
 <%= stylesheet_link_tag 'sp_app', :plugin => "redmine_spent_time" %>
 <%= stylesheet_link_tag 'jquery_ui', :plugin => "redmine_spent_time" %>
 <%= javascript_include_tag 'spajax', :plugin => "redmine_spent_time" %>
@@ -32,6 +33,6 @@
     padding: 5px 10px;
   }
   </style>
-
+<% end %>
 <%= render :partial => 'edit_time_entry' %>
 
