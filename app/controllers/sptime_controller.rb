@@ -1,7 +1,7 @@
 class SptimeController < ApplicationController
 	unloadable
 	include SptimeHelper
-	before_filter :require_login
+	before_action :require_login
 	menu_item :sptime
 
 
@@ -227,7 +227,7 @@ class SptimeController < ApplicationController
 			end
 		end
 		respond_to do |format|
-			format.text  { render :text => userStr }
+			format.text  { render :plain => userStr }
 		end
 	end
 
@@ -260,7 +260,7 @@ class SptimeController < ApplicationController
 		end
 
 		respond_to do |format|
-			format.text  { render :text => responseArr }
+			format.text  { render :plain => responseArr }
 		end		 
 	end  
 
@@ -289,7 +289,7 @@ class SptimeController < ApplicationController
 		end
 
 		respond_to do |format|
-			format.text  { render :text => responseArr }
+			format.text  { render :plain => responseArr }
 		end	
 	end
 

@@ -7,7 +7,7 @@ $(document).ready(function()
         $(this).datepicker({ dateFormat: 'yy-mm-dd' });
 	});
 	var table = document.getElementById('timeEntryTable');
-	if(document.getElementById('timeEntryTable') != null)
+	/* if(document.getElementById('timeEntryTable') != null)
 	{
 		var rowlength = table.rows.length;
 		for(var i =0; i< rowlength; i++)
@@ -20,7 +20,7 @@ $(document).ready(function()
 			ddAutoComplete(memberId, false);
 		}
 	
-	}
+	} */
 	
 });
 
@@ -58,6 +58,7 @@ function cpyBranchChanged(curDDId, changeDDId,  needBlank, type, projectBlank, l
 	var currDD = document.getElementById(curDDId);
 	var needBlankOption = needBlank;
 	var changeDD = document.getElementById(changeDDId);	
+	var fmt = 'text';
 	var cpyId = "";
 	if(document.getElementById('company_id') != null)
 	{
@@ -67,7 +68,7 @@ function cpyBranchChanged(curDDId, changeDDId,  needBlank, type, projectBlank, l
 	$.ajax({
 	url: cpybranchUrl,
 	type: 'get',
-	data: {id: currDD.value, filter_type: type, company_id: cpyId },
+	data: {id: currDD.value, filter_type: type, format: fmt, company_id: cpyId },
 	success: function(data){ loadDD(data, changeDD,  needBlankOption, false, "");},
 	beforeSend: function(){ $this.addClass('ajax-loading'); },
 	complete: function(){  branchProjectChanged(changeDDId, 'project_id',  projectBlank, 'project', loadMember); $this.removeClass('ajax-loading'); }	      
@@ -80,6 +81,7 @@ function branchProjectChanged(curDDId, changeDDId, needBlank, type, loadMember)
 	var currDD = document.getElementById(curDDId);
 	var needBlankOption = needBlank;
 	var changeDD = document.getElementById(changeDDId);	
+	var fmt = 'text';
 	var cpyId = "";
 	if(document.getElementById('company_id') != null)
 	{
@@ -89,7 +91,7 @@ function branchProjectChanged(curDDId, changeDDId, needBlank, type, loadMember)
 	$.ajax({
 	url: cpybranchUrl,
 	type: 'get',
-	data: {id: currDD.value, filter_type: type, company_id: cpyId },
+	data: {id: currDD.value, filter_type: type, format: fmt, company_id: cpyId },
 	success: function(data){ loadDD(data, changeDD,  needBlankOption, false, "");},
 	beforeSend: function(){ $this.addClass('ajax-loading'); },
 	complete: function(){  if(loadMember){changedMembers(); }else {projectVersionChanged('project_id', 'version_id', true);} $this.removeClass('ajax-loading'); }	      
@@ -256,11 +258,12 @@ function projectIssueOrMemberChanged(curDDId, changeDDId, needBlank, type)
 	var currDD = document.getElementById(curDDId);
 	var needBlankOption = needBlank;
 	var changeDD = document.getElementById(changeDDId);		
+	var fmt = 'text';	
 	var $this = $(this);
 	$.ajax({
 	url: projectUrl,
 	type: 'get',
-	data: {id: currDD.value, filter_type: type },
+	data: {id: currDD.value, format: fmt, filter_type: type },
 	success: function(data){ loadDD(data, changeDD,  needBlankOption, false, "");},
 	beforeSend: function(){ $this.addClass('ajax-loading'); },
 	complete: function(){  $this.removeClass('ajax-loading'); }	      
@@ -437,12 +440,13 @@ function projectVersionChanged(curDDId, changeDDId, needBlank)
 {		
 	var currDD = document.getElementById(curDDId);
 	var needBlankOption = needBlank;
-	var changeDD = document.getElementById(changeDDId);		
+	var changeDD = document.getElementById(changeDDId);			
+	var fmt = 'text';
 	var $this = $(this);
 	$.ajax({
 	url: versionUrl,
 	type: 'get',
-	data: {project_id: currDD.value },
+	data: {project_id: currDD.value, format: fmt },
 	success: function(data){ loadDD(data, changeDD,  needBlankOption, false, "");},
 	beforeSend: function(){ $this.addClass('ajax-loading'); },
 	complete: function(){  $this.removeClass('ajax-loading'); }	      
